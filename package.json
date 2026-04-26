@@ -7,6 +7,7 @@
     "typescript": "^5"
   },
   "dependencies": {
-    "@agentclientprotocol/sdk": "^0.20.0"
+    "@agentclientprotocol/sdk": "^0.20.0",
+    "yaml": "^2.8.3"
   }
 }

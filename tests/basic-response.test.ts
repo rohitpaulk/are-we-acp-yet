@@ -1,10 +1,18 @@
 import { expect, test } from "bun:test";
 import { spawn, spawnSync } from "node:child_process";
 import { resolve } from "node:path";
+import { readdirSync, readFileSync } from "node:fs";
 import { Writable, Readable } from "node:stream";
 import * as acp from "@agentclientprotocol/sdk";
+import { parse as parseYaml } from "yaml";
 
 const PROJECT_ROOT = resolve(import.meta.dir, "..");
+const AGENTS_DIR = resolve(PROJECT_ROOT, "agents");
+
+type AgentConfig = {
+  name: string;
+  env_vars: string[];
+};
 
 type Agent = {
   name: string;
@@ -12,13 +20,23 @@ type Agent = {
   envVars: string[];
 };
 
-const agents: Agent[] = [
-  {
-    name: "codex",
-    dockerContext: "agents/codex",
-    envVars: ["OPENAI_API_KEY"],
-  },
-];
+function discoverAgents(): Agent[] {
+  const entries = readdirSync(AGENTS_DIR, { withFileTypes: true });
+  return entries
+    .filter((e) => e.isDirectory())
+    .map((e) => {
+      const configPath = resolve(AGENTS_DIR, e.name, "agent.yaml");
+      const raw = readFileSync(configPath, "utf-8");
+      const config = parseYaml(raw) as AgentConfig;
+      return {
+        name: config.name,
+        dockerContext: `agents/${e.name}`,
+        envVars: config.env_vars,
+      };
+    });
+}
+
+const agents = discoverAgents();
 
 for (const agent of agents) {
   const missing = agent.envVars.filter((v) => !process.env[v]);
@@ -86,13 +104,14 @@ test.each(agents)(
       });
 
       if (initResult.authMethods?.length) {
-        for (const method of initResult.authMethods) {
-          try {
-            await connection.authenticate({ methodId: method.id });
-            break;
-          } catch {
-            // try next method
-          }
+        const envVarMethod = initResult.authMethods.find(
+          (m): m is acp.AuthMethodEnvVar & { type: "env_var" } =>
+            "type" in m &&
+            m.type === "env_var" &&
+            m.vars.every((v) => v.optional || agent.envVars.includes(v.name))
+        );
+        if (envVarMethod) {
+          await connection.authenticate({ methodId: envVarMethod.id });
         }
       }
 
