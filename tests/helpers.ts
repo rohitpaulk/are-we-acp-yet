@@ -1,10 +1,6 @@
-import { setDefaultTimeout } from "bun:test";
 import * as acp from "@agentclientprotocol/sdk";
 import { AgentRegistry } from "../lib/agent-registry";
 import type { Agent } from "../lib/agent";
-
-// bunfig.toml [test].timeout is not applied when running specific files
-setDefaultTimeout(15_000);
 
 export const registry = new AgentRegistry();
 await registry.buildAllImages();

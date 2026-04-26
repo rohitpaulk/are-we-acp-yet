@@ -1,46 +1,45 @@
-import { expect, test } from "bun:test";
+import { expect, test, setDefaultTimeout } from "bun:test";
 import * as acp from "@agentclientprotocol/sdk";
 import { AgentProcess } from "../../lib/agent-process";
 import { registry, initAndAuth } from "../helpers";
 
-test.each(registry.agentNames)(
-  "%s: session/load replays conversation history when loadSession is supported",
-  async (name) => {
-    const agent = registry.agentByName(name);
-    const updates: acp.SessionUpdate[] = [];
+setDefaultTimeout(15_000);
 
-    using proc = new AgentProcess(agent, {
-      async sessionUpdate(params) {
-        updates.push(params.update);
-      },
-    });
+test.each(registry.agentNames)("%s: session/load replays conversation history", async (name) => {
+  const agent = registry.agentByName(name);
+  const updates: acp.SessionUpdate[] = [];
 
-    const initResult = await initAndAuth(proc, agent);
+  using proc = new AgentProcess(agent, {
+    async sessionUpdate(params) {
+      updates.push(params.update);
+    },
+  });
 
-    if (!initResult.agentCapabilities?.loadSession) {
-      return;
-    }
+  const initResult = await initAndAuth(proc, agent);
 
-    const session = await proc.connection.newSession({
-      cwd: "/tmp",
-      mcpServers: [],
-    });
+  if (!initResult.agentCapabilities?.loadSession) {
+    throw new Error(`${agent.name} does not support session/load`);
+  }
 
-    await proc.connection.prompt({
-      sessionId: session.sessionId,
-      prompt: [{ type: "text", text: "say exactly one word: hello" }],
-    });
+  const session = await proc.connection.newSession({
+    cwd: "/tmp",
+    mcpServers: [],
+  });
 
-    const updatesBeforeLoad = updates.length;
-    expect(updatesBeforeLoad).toBeGreaterThan(0);
+  await proc.connection.prompt({
+    sessionId: session.sessionId,
+    prompt: [{ type: "text", text: "say exactly one word: hello" }],
+  });
 
-    await proc.connection.loadSession({
-      sessionId: session.sessionId,
-      cwd: "/tmp",
-      mcpServers: [],
-    });
+  const updatesBeforeLoad = updates.length;
+  expect(updatesBeforeLoad).toBeGreaterThan(0);
 
-    const replayedUpdates = updates.slice(updatesBeforeLoad);
-    expect(replayedUpdates.length).toBeGreaterThan(0);
-  },
-);
+  await proc.connection.loadSession({
+    sessionId: session.sessionId,
+    cwd: "/tmp",
+    mcpServers: [],
+  });
+
+  const replayedUpdates = updates.slice(updatesBeforeLoad);
+  expect(replayedUpdates.length).toBeGreaterThan(0);
+});

@@ -1,6 +1,8 @@
-import { expect, test } from "bun:test";
+import { expect, test, setDefaultTimeout } from "bun:test";
 import { AgentProcess } from "../../lib/agent-process";
 import { registry, initAndAuth } from "../helpers";
+
+setDefaultTimeout(15_000);
 
 test.each(registry.agentNames)(
   "%s: session/new returns a non-empty sessionId",

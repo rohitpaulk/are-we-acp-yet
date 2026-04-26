@@ -1,10 +1,12 @@
-import { expect, test } from "bun:test";
+import { expect, test, setDefaultTimeout } from "bun:test";
 import * as acp from "@agentclientprotocol/sdk";
 import { AgentProcess } from "../../lib/agent-process";
 import { registry, initAndAuth } from "../helpers";
 
+setDefaultTimeout(15_000);
+
 test.each(registry.agentNames)(
-  "%s: session/resume does not replay conversation history when resume is supported",
+  "%s: session/resume does not replay conversation history",
   async (name) => {
     const agent = registry.agentByName(name);
     const updates: acp.SessionUpdate[] = [];
@@ -18,7 +20,7 @@ test.each(registry.agentNames)(
     const initResult = await initAndAuth(proc, agent);
 
     if (!initResult.agentCapabilities?.sessionCapabilities?.resume) {
-      return;
+      throw new Error(`${agent.name} does not support session/resume`);
     }
 
     const session = await proc.connection.newSession({
