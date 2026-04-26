@@ -1,14 +1,54 @@
 import { expect, test } from "bun:test";
-import { spawn } from "node:child_process";
+import { spawn, spawnSync } from "node:child_process";
+import { resolve } from "node:path";
 import { Writable, Readable } from "node:stream";
 import * as acp from "@agentclientprotocol/sdk";
 
-test(
-  "codex-acp: agent responds with 'hi' when asked to say one word",
-  async () => {
-    const agentProcess = spawn("bunx", ["@zed-industries/codex-acp"], {
-      stdio: ["pipe", "pipe", "inherit"],
-    });
+const PROJECT_ROOT = resolve(import.meta.dir, "..");
+
+type Agent = {
+  name: string;
+  dockerContext: string;
+  envVars: string[];
+};
+
+const agents: Agent[] = [
+  {
+    name: "codex",
+    dockerContext: "agents/codex",
+    envVars: ["OPENAI_API_KEY"],
+  },
+];
+
+for (const agent of agents) {
+  const missing = agent.envVars.filter((v) => !process.env[v]);
+  if (missing.length > 0) {
+    throw new Error(
+      `Missing required env vars for ${agent.name}: ${missing.join(", ")}`
+    );
+  }
+
+  const context = resolve(PROJECT_ROOT, agent.dockerContext);
+  const image = `acp-verifier-${agent.name}`;
+  const result = spawnSync("docker", ["build", "-t", image, context], {
+    stdio: "inherit",
+  });
+  if (result.status !== 0) {
+    throw new Error(`Failed to build Docker image for ${agent.name}`);
+  }
+}
+
+test.each(agents)(
+  "%p: agent responds with 'hi' when asked to say one word",
+  async (agent) => {
+    const image = `acp-verifier-${agent.name}`;
+    const envFlags = agent.envVars.flatMap((v) => ["-e", v]);
+
+    const agentProcess = spawn(
+      "docker",
+      ["run", "-i", "--rm", ...envFlags, image],
+      { stdio: ["pipe", "pipe", "inherit"] }
+    );
 
     const input = Writable.toWeb(agentProcess.stdin!);
     const output = Readable.toWeb(
@@ -39,11 +79,22 @@ test(
     );
 
     try {
-      await connection.initialize({
+      const initResult = await connection.initialize({
         protocolVersion: acp.PROTOCOL_VERSION,
         clientCapabilities: {},
         clientInfo: { name: "acp-verifier", version: "0.1.0" },
       });
+
+      if (initResult.authMethods?.length) {
+        for (const method of initResult.authMethods) {
+          try {
+            await connection.authenticate({ methodId: method.id });
+            break;
+          } catch {
+            // try next method
+          }
+        }
+      }
 
       const sessionResult = await connection.newSession({
         cwd: process.cwd(),
