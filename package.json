@@ -1,7 +1,8 @@
 {
   "name": "acp-verifier",
   "devDependencies": {
-    "@types/bun": "latest"
+    "@types/bun": "latest",
+    "@zed-industries/codex-acp": "^0.12.0"
   },
   "peerDependencies": {
     "typescript": "^5"

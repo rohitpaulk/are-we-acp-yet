@@ -1,6 +1,6 @@
 # ACP Verifier
 
-A CLI tool to verify whether an ACP server is compliant with the [spec](https://agentclientprotocol.com/protocol/overview).
+A test suite to verify whether an [ACP (Agent Client Protocol)](https://agentclientprotocol.com/) server is compliant with the [spec](https://agentclientprotocol.com/protocol/overview).
 
 ## Results (TODO)
 
