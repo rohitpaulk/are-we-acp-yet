@@ -1,10 +1,7 @@
 import { expect, test } from "bun:test";
 import * as acp from "@agentclientprotocol/sdk";
-import { AgentRegistry } from "../lib/agent-registry";
 import { AgentProcess } from "../lib/agent-process";
-
-const registry = new AgentRegistry();
-await registry.buildAllImages();
+import { registry } from "./helpers";
 
 test.each(registry.agentNames)(
   "%s: responds to initialize within 500ms",

@@ -1,10 +1,7 @@
 import { expect, test } from "bun:test";
 import * as acp from "@agentclientprotocol/sdk";
-import { AgentRegistry } from "../lib/agent-registry";
 import { AgentProcess } from "../lib/agent-process";
-
-const registry = new AgentRegistry();
-await registry.buildAllImages();
+import { registry } from "./helpers";
 
 test.each(registry.agentNames)(
   "%s: responds with matching protocol version when agent supports it",
@@ -29,7 +26,7 @@ test.each(registry.agentNames)(
     using proc = new AgentProcess(agent);
 
     const result = await proc.connection.initialize({
-      protocolVersion: 9, // unsupported version
+      protocolVersion: 9,
       clientCapabilities: {},
       clientInfo: { name: "acp-verifier", version: "0.1.0" },
     });
