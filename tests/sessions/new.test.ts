@@ -5,21 +5,7 @@ import { initAndAuth } from "../helpers";
 
 setDefaultTimeout(15_000);
 
-test.each(registry.agentSlugs)("%s: session/new returns a non-empty sessionId", async (slug) => {
-  const agent = registry.agentBySlug(slug);
-  using proc = new AgentProcess(agent);
-  await initAndAuth(proc, agent);
-
-  const result = await proc.connection.newSession({
-    cwd: "/tmp",
-    mcpServers: [],
-  });
-
-  expect(result.sessionId).toBeTruthy();
-  expect(typeof result.sessionId).toBe("string");
-});
-
-test.each(registry.agentSlugs)("%s: session/new returns distinct sessionIds", async (slug) => {
+test.each(registry.agentSlugs)("session/new returns distinct sessionIds (%s)", async (slug) => {
   const agent = registry.agentBySlug(slug);
   using proc = new AgentProcess(agent);
   await initAndAuth(proc, agent);
@@ -28,6 +14,7 @@ test.each(registry.agentSlugs)("%s: session/new returns distinct sessionIds", as
     cwd: "/tmp",
     mcpServers: [],
   });
+
   const second = await proc.connection.newSession({
     cwd: "/tmp",
     mcpServers: [],

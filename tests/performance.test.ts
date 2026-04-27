@@ -5,7 +5,7 @@ import { checkCollectorRegistry, registry } from "./setup";
 
 setDefaultTimeout(15_000);
 
-test.each(registry.agentSlugs)("%s: responds to initialize within 500ms", async (slug) => {
+test.each(registry.agentSlugs)("responds to initialize within 500ms (%s)", async (slug) => {
   const check = checkCollectorRegistry.get(slug);
   const agent = registry.agentBySlug(slug);
 

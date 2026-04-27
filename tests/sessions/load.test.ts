@@ -6,7 +6,7 @@ import { initAndAuth } from "../helpers";
 
 setDefaultTimeout(15_000);
 
-test.each(registry.agentSlugs)("%s: session/load replays conversation history", async (slug) => {
+test.each(registry.agentSlugs)("session/load replays conversation history (%s)", async (slug) => {
   const agent = registry.agentBySlug(slug);
   const updates: acp.SessionUpdate[] = [];
 
