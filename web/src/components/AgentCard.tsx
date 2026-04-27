@@ -1,4 +1,4 @@
-import { useState, useRef, useEffect } from "react";
+import { Tooltip } from "@base-ui/react/tooltip";
 import Balancer from "react-wrap-balancer";
 
 
@@ -59,51 +59,9 @@ function XIcon({ size = 14 }: { size?: number }) {
   );
 }
 
-function Popover({
-  check,
-  anchorRef,
-  onMouseEnter,
-  onMouseLeave,
-}: {
-  check: Check;
-  anchorRef: React.RefObject<HTMLDivElement | null>;
-  onMouseEnter: () => void;
-  onMouseLeave: () => void;
-}) {
-  const popoverRef = useRef<HTMLDivElement>(null);
-  const [pos, setPos] = useState<{ top: number; left: number } | null>(null);
-
-  useEffect(() => {
-    const anchor = anchorRef.current;
-    const popover = popoverRef.current;
-    if (!anchor || !popover) return;
-
-    const anchorRect = anchor.getBoundingClientRect();
-    const popoverRect = popover.getBoundingClientRect();
-
-    let left = anchorRect.left + anchorRect.width / 2 - popoverRect.width / 2;
-    const top = anchorRect.top - popoverRect.height - 8;
-
-    left = Math.max(
-      8,
-      Math.min(left, window.innerWidth - popoverRect.width - 8),
-    );
-
-    setPos({ top: top + window.scrollY, left: left + window.scrollX });
-  }, [anchorRef]);
-
+function TooltipContent({ check }: { check: Check }) {
   return (
-    <div
-      ref={popoverRef}
-      className="tooltip-popup"
-      onMouseEnter={onMouseEnter}
-      onMouseLeave={onMouseLeave}
-      style={
-        pos
-          ? { position: "absolute", top: pos.top, left: pos.left }
-          : { position: "absolute", visibility: "hidden" }
-      }
-    >
+    <>
       <div className="flex items-center gap-1.5 font-bold text-sm mb-2.5">
         <span className={`tooltip-icon ${check.status}`}>
           {check.status === "pass" ? (
@@ -123,49 +81,30 @@ function Popover({
       >
         View details &rarr;
       </a>
-    </div>
+    </>
   );
 }
 
 function CheckCell({ check }: { check: Check }) {
-  const [open, setOpen] = useState(false);
-  const closeTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
-  const ref = useRef<HTMLDivElement>(null);
-
-  const show = () => {
-    if (closeTimer.current) clearTimeout(closeTimer.current);
-    setOpen(true);
-  };
-
-  const scheduleClose = () => {
-    closeTimer.current = setTimeout(() => setOpen(false), 150);
-  };
-
-  useEffect(() => {
-    return () => {
-      if (closeTimer.current) clearTimeout(closeTimer.current);
-    };
-  }, []);
+  const statusLabel = check.status === "pass" ? "Passed" : "Failed";
 
   return (
-    <>
-      <div
-        ref={ref}
+    <Tooltip.Root>
+      <Tooltip.Trigger
+        aria-label={`${check.label}: ${statusLabel}`}
+        closeOnClick={false}
         className={`cell ${check.status}`}
-        onMouseEnter={show}
-        onMouseLeave={scheduleClose}
       >
         {check.status === "pass" ? <CheckIcon /> : <XIcon />}
-      </div>
-      {open && (
-        <Popover
-          check={check}
-          anchorRef={ref}
-          onMouseEnter={show}
-          onMouseLeave={scheduleClose}
-        />
-      )}
-    </>
+      </Tooltip.Trigger>
+      <Tooltip.Portal>
+        <Tooltip.Positioner sideOffset={8}>
+          <Tooltip.Popup className="tooltip-popup">
+            <TooltipContent check={check} />
+          </Tooltip.Popup>
+        </Tooltip.Positioner>
+      </Tooltip.Portal>
+    </Tooltip.Root>
   );
 }
 
@@ -199,11 +138,13 @@ export default function AgentCard({
           <div className="text-xs text-text-muted mt-0.5">passed</div>
         </div>
       </div>
-      <div className="check-grid">
-        {checks.map((check) => (
-          <CheckCell key={check.slug} check={check} />
-        ))}
-      </div>
+      <Tooltip.Provider delay={150} closeDelay={150}>
+        <div className="check-grid">
+          {checks.map((check) => (
+            <CheckCell key={check.slug} check={check} />
+          ))}
+        </div>
+      </Tooltip.Provider>
     </div>
   );
 }

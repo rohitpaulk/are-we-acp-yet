@@ -67,16 +67,21 @@ const totalChecks = agents[0]?.checks.length ?? 0;
 
       .cell {
         position: relative;
+        width: 100%;
         aspect-ratio: 1;
         border-radius: 5px;
         display: flex;
         align-items: center;
         justify-content: center;
+        appearance: none;
+        padding: 0;
+        font: inherit;
         cursor: default;
         transition: transform 0.12s ease, box-shadow 0.12s ease;
       }
 
-      .cell:hover {
+      .cell:hover,
+      .cell[data-popup-open] {
         transform: scale(1.25);
         z-index: 10;
       }
