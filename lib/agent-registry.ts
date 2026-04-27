@@ -26,9 +26,7 @@ export class AgentRegistry {
 
   private discover(): Agent[] {
     const entries = readdirSync(AGENTS_DIR, { withFileTypes: true });
-    return entries
-      .filter((e) => e.isDirectory())
-      .map((e) => Agent.fromDir(e.name));
+    return entries.filter((e) => e.isDirectory()).map((e) => Agent.fromDir(e.name));
   }
 
   async buildAllImages(): Promise<void> {

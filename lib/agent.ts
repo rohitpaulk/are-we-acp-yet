@@ -41,9 +41,7 @@ export class Agent {
   async buildImage(): Promise<void> {
     const missing = this.envVars.filter((v) => !process.env[v]);
     if (missing.length > 0) {
-      throw new Error(
-        `Missing required env vars for ${this.name}: ${missing.join(", ")}`
-      );
+      throw new Error(`Missing required env vars for ${this.name}: ${missing.join(", ")}`);
     }
 
     const prefix = chalk.cyan(`[build-${this.name}]`);
