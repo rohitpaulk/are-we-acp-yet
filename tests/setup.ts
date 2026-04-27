@@ -8,3 +8,4 @@ export const registry = new AgentRegistry();
 await registry.buildAllImages();
 
 export const checkCollectorRegistry = new CheckCollectorRegistry(registry);
+

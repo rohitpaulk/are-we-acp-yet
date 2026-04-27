@@ -19,9 +19,11 @@ test.each(registry.agentSlugs)("%s: responds to initialize within 500ms", async 
     clientInfo: { name: "acp-verifier", version: "0.1.0" },
   });
 
-  if (elapsed > 500) {
-    throw new Error(`${agent.slug} took too long to respond to initialize`);
-  }
   const elapsed = performance.now() - start;
-  expect(elapsed).toBeLessThanOrEqual(500);
+
+  if (elapsed <= 500) {
+    check.pass("boot-time-500ms");
+  } else {
+    check.fail("boot-time-500ms");
+  }
 });

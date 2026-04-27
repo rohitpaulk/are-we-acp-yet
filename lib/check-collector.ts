@@ -1,28 +1,20 @@
-import { resolve } from "node:path";
-import { readdirSync } from "fs";
 import type { Agent } from "./agent";
-
-const PROJECT_ROOT = resolve(import.meta.dir, "..");
-const CHECKS_DIR = resolve(PROJECT_ROOT, "checks");
+import { CHECK_SLUGS, type CheckSlug } from "./generated/check-slugs";
 
 export class CheckCollector {
   readonly agent: Agent;
-  readonly checkSlugs: Set<string>;
-  readonly passedCheckSlugs: Set<string>;
-  readonly failedCheckSlugs: Set<string>;
+  readonly checkSlugs: Set<CheckSlug>;
+  readonly passedCheckSlugs: Set<CheckSlug>;
+  readonly failedCheckSlugs: Set<CheckSlug>;
 
   constructor(agent: Agent) {
     this.agent = agent;
-    this.checkSlugs = this.discoverCheckSlugs();
+    this.checkSlugs = new Set(CHECK_SLUGS);
     this.passedCheckSlugs = new Set();
     this.failedCheckSlugs = new Set();
   }
 
-  pass(slug: string): void {
-    if (!this.checkSlugs.has(slug)) {
-      throw new Error(`Unknown check: ${slug}`);
-    }
-
+  pass(slug: CheckSlug): void {
     if (this.failedCheckSlugs.has(slug)) {
       throw new Error(`Failed check ${slug} cannot be marked as passed`);
     }
@@ -34,11 +26,7 @@ export class CheckCollector {
     this.passedCheckSlugs.add(slug);
   }
 
-  fail(slug: string): void {
-    if (!this.checkSlugs.has(slug)) {
-      throw new Error(`Unknown check: ${slug}`);
-    }
-
+  fail(slug: CheckSlug): void {
     if (this.passedCheckSlugs.has(slug)) {
       throw new Error(`Passed check ${slug} cannot be marked as failed`);
     }
@@ -48,15 +36,5 @@ export class CheckCollector {
     }
 
     this.failedCheckSlugs.add(slug);
-  }
-
-  private discoverCheckSlugs(): Set<string> {
-    const entries = readdirSync(CHECKS_DIR, { withFileTypes: true });
-
-    const setSlugs = entries
-      .filter((e) => e.isFile() && e.name.endsWith(".md"))
-      .map((e) => e.name.replace(/\.md$/, ""));
-
-    return new Set(setSlugs);
   }
 }
