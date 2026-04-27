@@ -93,9 +93,11 @@ function CheckCell({ check }: { check: Check }) {
       <Tooltip.Trigger
         aria-label={`${check.label}: ${statusLabel}`}
         closeOnClick={false}
-        className={`cell ${check.status}`}
+        className="cell-anchor"
       >
-        {check.status === "pass" ? <CheckIcon /> : <XIcon />}
+        <span className={`cell ${check.status}`} aria-hidden="true">
+          {check.status === "pass" ? <CheckIcon /> : <XIcon />}
+        </span>
       </Tooltip.Trigger>
       <Tooltip.Portal>
         <Tooltip.Positioner sideOffset={8}>
