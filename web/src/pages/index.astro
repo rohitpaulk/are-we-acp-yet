@@ -25,7 +25,7 @@ function failCount(checks: { status: string }[]) {
     <meta name="generator" content={Astro.generator} />
     <title>Are we ACP yet?</title>
     <style>
-      @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500;700&family=Space+Grotesk:wght@400;500;600;700&display=swap');
+      @import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;700&family=Space+Grotesk:wght@400;500;600;700;800&display=swap');
 
       *, *::before, *::after {
         box-sizing: border-box;
@@ -52,7 +52,7 @@ function failCount(checks: { status: string }[]) {
       html {
         background: var(--bg);
         color: var(--text);
-        font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+        font-family: 'Space Grotesk', -apple-system, BlinkMacSystemFont, sans-serif;
         -webkit-font-smoothing: antialiased;
       }
 
@@ -74,17 +74,16 @@ function failCount(checks: { status: string }[]) {
         display: flex;
         align-items: center;
         gap: 10px;
+        font-family: 'Space Grotesk', sans-serif;
         font-weight: 700;
         font-size: 0.95rem;
         color: var(--text);
         text-decoration: none;
       }
 
-      .nav-logo {
-        color: var(--green);
-        font-family: 'JetBrains Mono', monospace;
-        font-size: 1.1rem;
-        font-weight: 700;
+      .nav-logo-img {
+        height: 40px;
+        width: 40px;
       }
 
       .nav-links {
@@ -140,25 +139,10 @@ function failCount(checks: { status: string }[]) {
         color: var(--text);
       }
 
-      .badge {
-        display: inline-flex;
-        align-items: center;
-        gap: 8px;
-        margin-top: 20px;
-        padding: 6px 16px;
-        border-radius: 100px;
-        background: var(--surface);
-        border: 1px solid var(--border);
-        font-size: 0.82rem;
-        font-weight: 500;
-        color: var(--text-dim);
-      }
-
-      .badge-dot {
-        width: 8px;
-        height: 8px;
-        border-radius: 50%;
-        background: var(--green);
+      .acp-logo {
+        margin-bottom: 20px;
+        height: 28px;
+        opacity: 0.7;
       }
 
       .subtitle {
@@ -444,7 +428,7 @@ function failCount(checks: { status: string }[]) {
   <body>
     <nav>
       <a href="/" class="nav-brand">
-        <span class="nav-logo">&gt;_</span>
+        <img src="/logos/acp.svg" alt="ACP" class="nav-logo-img" />
         Are we ACP yet?
       </a>
       <div class="nav-links">
@@ -457,11 +441,8 @@ function failCount(checks: { status: string }[]) {
 
     <div class="container">
       <header>
+        <img src="/logos/acp-full.svg" alt="ACP: Agent Client Protocol" class="acp-logo" />
         <h1>Are we ACP yet?</h1>
-        <div class="badge">
-          <span class="badge-dot"></span>
-          ACP: Agentic Control Protocol
-        </div>
         <p class="subtitle">
           Your ACP server has bugs. Let's find them.<br/>
           <span class="legend-green">Green</span> means passed. <span class="legend-red">Red</span> means not yet.
