@@ -23,7 +23,7 @@ test.each(registry.agentSlugs)(
 
     if (!initResult.agentCapabilities?.sessionCapabilities?.resume) {
       check.fail("supports-session-resume");
-      throw new Error(`${agent.slug} does not support session/resume`);
+      return;
     }
 
     const session = await proc.connection.newSession({

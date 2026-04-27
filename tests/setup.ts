@@ -23,30 +23,18 @@ afterAll(() => {
   console.log("=".repeat(60));
 
   for (const check of allChecks) {
-    const passed: string[] = [];
-    const failed: string[] = [];
-    const untested: string[] = [];
-
-    for (const collector of collectors) {
-      if (collector.passedCheckSlugs.has(check)) {
-        passed.push(collector.agent.slug);
-      } else if (collector.failedCheckSlugs.has(check)) {
-        failed.push(collector.agent.slug);
-      } else {
-        untested.push(collector.agent.slug);
-      }
-    }
-
     console.log(`\n${chalk.bold(check)}`);
 
-    if (passed.length > 0) {
-      console.log(`  ${chalk.green("PASS")}: ${passed.join(", ")}`);
-    }
-    if (failed.length > 0) {
-      console.log(`  ${chalk.red("FAIL")}: ${failed.join(", ")}`);
-    }
-    if (untested.length > 0) {
-      console.log(`  ${chalk.gray("SKIP")}: ${untested.join(", ")}`);
+    for (const collector of collectors) {
+      let status: string;
+      if (collector.passedCheckSlugs.has(check)) {
+        status = chalk.green("PASS");
+      } else if (collector.failedCheckSlugs.has(check)) {
+        status = chalk.red("FAIL");
+      } else {
+        status = chalk.gray("SKIP");
+      }
+      console.log(`  ${collector.agent.slug}: ${status}`);
     }
   }
 
