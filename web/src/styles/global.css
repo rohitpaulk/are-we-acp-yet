@@ -1,0 +1,27 @@
+@import "tailwindcss";
+@source "../../src/**/*.astro";
+@import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;700&family=Space+Grotesk:wght@400;500;600;700;800&display=swap');
+
+@theme {
+  --color-bg: #0b0d0f;
+  --color-surface: #131719;
+  --color-surface-hover: #191d20;
+  --color-border: #1f2428;
+  --color-border-hover: #2a2e32;
+  --color-text: #e6eaed;
+  --color-text-dim: #9ca3ab;
+  --color-text-muted: #5c6670;
+  --color-green: #2dd468;
+  --color-green-bg: rgba(45, 212, 104, 0.12);
+  --color-green-bg-hover: rgba(45, 212, 104, 0.2);
+  --color-green-border: rgba(45, 212, 104, 0.25);
+  --color-red: #f04848;
+  --color-red-bg: rgba(240, 72, 72, 0.12);
+  --color-red-bg-hover: rgba(240, 72, 72, 0.2);
+  --color-red-border: rgba(240, 72, 72, 0.25);
+  --color-tooltip-bg: #181c1f;
+  --color-tooltip-border: #282e33;
+
+  --font-sans: 'Space Grotesk', -apple-system, BlinkMacSystemFont, sans-serif;
+  --font-mono: 'JetBrains Mono', monospace;
+}
