@@ -3,6 +3,19 @@ import "../styles/global.css";
 import mockData from "../data/mock-results.json";
 import AgentCard from "../components/AgentCard";
 
+const formatHumanDate = (value: string) => {
+  const [year, month, day] = value.split("-").map(Number);
+  const date = new Date(year, month - 1, day);
+  const suffix =
+    day >= 11 && day <= 13
+      ? "th"
+      : ["th", "st", "nd", "rd"][day % 10] ?? "th";
+
+  return `${day}${suffix} ${date.toLocaleString("en", {
+    month: "long",
+  })} ${year}`;
+};
+
 const agents = [...mockData.agents].sort((a, b) => {
   const pctA =
     a.checks.filter((c) => c.status === "pass").length / a.checks.length;
@@ -10,7 +23,7 @@ const agents = [...mockData.agents].sort((a, b) => {
     b.checks.filter((c) => c.status === "pass").length / b.checks.length;
   return pctB - pctA;
 });
-const totalChecks = agents[0]?.checks.length ?? 0;
+const lastUpdated = formatHumanDate(mockData.lastUpdated);
 ---
 
 <html lang="en">
@@ -33,7 +46,7 @@ const totalChecks = agents[0]?.checks.length ?? 0;
         Are we ACP yet?
       </a>
       <a
-        href="https://github.com/nichochar/acp"
+        href="https://github.com/rohitpaulk/acp-verifier"
         target="_blank"
         class="inline-flex items-center gap-1.5 px-3.5 py-2 rounded-lg text-sm font-medium text-text-dim no-underline border border-border bg-surface transition-colors hover:text-text hover:border-border-hover"
       >
@@ -55,9 +68,12 @@ const totalChecks = agents[0]?.checks.length ?? 0;
         <h1 class="text-5xl font-bold tracking-tighter leading-none text-text">
           Are we ACP yet?
         </h1>
-        <p class="mt-4 text-text-muted text-base leading-relaxed">
-          We are <b class="text-red font-semibold">not</b>. Yet.<br />
-        </p>
+        <div
+          class="mt-5 inline-flex items-center gap-2 rounded-full border border-red-border bg-red-bg px-3 py-1.5 text-xs font-semibold uppercase tracking-wide text-red"
+        >
+          <span class="h-1.5 w-1.5 rounded-full bg-red"></span>
+          <span>Status: Not Ready</span>
+        </div>
         <p class="mt-4 text-text-muted text-base leading-relaxed">
           <span class="text-green font-semibold">Green</span> checks pass,
           <span class="text-red font-semibold">red</span> checks fail. <br />
@@ -75,14 +91,12 @@ const totalChecks = agents[0]?.checks.length ?? 0;
         <div class="flex items-center gap-4">
           <span
             >Last updated: <span class="text-text-dim"
-              >{mockData.lastUpdated}</span
+              >{lastUpdated}</span
             ></span
           >
-          <span class="w-1 h-1 rounded-full bg-text-muted"></span>
-          <span>Checks: <span class="text-text-dim">{totalChecks}</span></span>
         </div>
         <a
-          href="https://github.com/nichochar/acp"
+          href="https://github.com/rohitpaulk/acp-verifier"
           target="_blank"
           class="text-text-muted no-underline transition-colors hover:text-text"
         >
