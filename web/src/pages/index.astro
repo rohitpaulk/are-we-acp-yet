@@ -2,6 +2,7 @@
 import "../styles/global.css";
 import mockData from "../data/mock-results.json";
 import AgentCard from "../components/AgentCard";
+import StatusPill from "../components/StatusPill";
 
 const formatHumanDate = (value: string) => {
   const [year, month, day] = value.split("-").map(Number);
@@ -68,12 +69,7 @@ const lastUpdated = formatHumanDate(mockData.lastUpdated);
         <h1 class="text-5xl font-bold tracking-tighter leading-none text-text">
           Are we ACP yet?
         </h1>
-        <div
-          class="mt-5 inline-flex items-center gap-2 rounded-full border border-red-border bg-red-bg px-3 py-1.5 text-xs font-semibold uppercase tracking-wide text-red"
-        >
-          <span class="h-1.5 w-1.5 rounded-full bg-red"></span>
-          <span>Status: Not Ready</span>
-        </div>
+        <StatusPill client:load />
         <p class="mt-4 text-text-muted text-base leading-relaxed">
           <span class="text-green font-semibold">Green</span> checks pass,
           <span class="text-red font-semibold">red</span> checks fail. <br />
@@ -207,6 +203,14 @@ const lastUpdated = formatHumanDate(mockData.lastUpdated);
         background: var(--color-red-bg);
         color: var(--color-red);
         border: 1.5px solid var(--color-red-border);
+      }
+
+      .status-tooltip-popup {
+        max-width: none;
+        padding: 8px 10px;
+        font-size: 0.75rem;
+        text-align: center;
+        white-space: nowrap;
       }
     </style>
   </body>
