@@ -4,8 +4,10 @@ import mockData from "../data/mock-results.json";
 import AgentCard from "../components/AgentCard";
 
 const agents = [...mockData.agents].sort((a, b) => {
-  const pctA = a.checks.filter((c) => c.status === "pass").length / a.checks.length;
-  const pctB = b.checks.filter((c) => c.status === "pass").length / b.checks.length;
+  const pctA =
+    a.checks.filter((c) => c.status === "pass").length / a.checks.length;
+  const pctB =
+    b.checks.filter((c) => c.status === "pass").length / b.checks.length;
   return pctB - pctA;
 });
 const totalChecks = agents[0]?.checks.length ?? 0;
@@ -20,39 +22,70 @@ const totalChecks = agents[0]?.checks.length ?? 0;
     <title>Are we ACP yet?</title>
   </head>
   <body class="min-h-screen bg-bg text-text antialiased">
-    <nav class="flex items-center justify-between px-8 py-4 border-b border-border">
-      <a href="/" class="flex items-center gap-2.5 font-bold text-base text-text no-underline">
+    <nav
+      class="flex items-center justify-between px-8 py-4 border-b border-border"
+    >
+      <a
+        href="/"
+        class="flex items-center gap-2.5 font-bold text-base text-text no-underline"
+      >
         <img src="/logos/acp.svg" alt="ACP" class="h-10 w-10" />
         Are we ACP yet?
       </a>
-      <a href="https://github.com/nichochar/acp" target="_blank" class="inline-flex items-center gap-1.5 px-3.5 py-2 rounded-lg text-sm font-medium text-text-dim no-underline border border-border bg-surface transition-colors hover:text-text hover:border-border-hover">
-        <svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor"><path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.013 8.013 0 0016 8c0-4.42-3.58-8-8-8z"/></svg>
+      <a
+        href="https://github.com/nichochar/acp"
+        target="_blank"
+        class="inline-flex items-center gap-1.5 px-3.5 py-2 rounded-lg text-sm font-medium text-text-dim no-underline border border-border bg-surface transition-colors hover:text-text hover:border-border-hover"
+      >
+        <svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor"
+          ><path
+            d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.013 8.013 0 0016 8c0-4.42-3.58-8-8-8z"
+          ></path></svg
+        >
       </a>
     </nav>
 
     <div class="max-w-5xl mx-auto px-7">
       <header class="pt-16 pb-12 text-center">
-        <img src="/logos/acp.svg" alt="ACP" class="mb-5 h-10 opacity-70 inline-block" />
-        <h1 class="text-5xl font-bold tracking-tighter leading-none text-text">Are we ACP yet?</h1>
+        <img
+          src="/logos/acp.svg"
+          alt="ACP"
+          class="mb-5 h-10 opacity-70 inline-block"
+        />
+        <h1 class="text-5xl font-bold tracking-tighter leading-none text-text">
+          Are we ACP yet?
+        </h1>
         <p class="mt-4 text-text-muted text-base leading-relaxed">
-          Your ACP server has bugs. Let's find them.<br/>
-          <span class="text-green font-semibold">Green</span> means passed. <span class="text-red font-semibold">Red</span> means not yet.
+          We are <b class="text-red font-semibold">not</b>. Yet.<br />
+        </p>
+        <p class="mt-4 text-text-muted text-base leading-relaxed">
+          <span class="text-green font-semibold">Green</span> checks pass,
+          <span class="text-red font-semibold">red</span> checks fail. <br />
+          Hover to see details.
         </p>
       </header>
 
       <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
-        {agents.map((agent) => (
-          <AgentCard client:load {...agent} />
-        ))}
+        {agents.map((agent) => <AgentCard client:load {...agent} />)}
       </div>
 
-      <div class="flex items-center justify-between mt-8 pt-5 pb-10 border-t border-border text-xs text-text-muted">
+      <div
+        class="flex items-center justify-between mt-8 pt-5 pb-10 border-t border-border text-xs text-text-muted"
+      >
         <div class="flex items-center gap-4">
-          <span>Last updated: <span class="text-text-dim">{mockData.lastUpdated}</span></span>
+          <span
+            >Last updated: <span class="text-text-dim"
+              >{mockData.lastUpdated}</span
+            ></span
+          >
           <span class="w-1 h-1 rounded-full bg-text-muted"></span>
           <span>Checks: <span class="text-text-dim">{totalChecks}</span></span>
         </div>
-        <a href="https://github.com/nichochar/acp" target="_blank" class="text-text-muted no-underline transition-colors hover:text-text">
+        <a
+          href="https://github.com/nichochar/acp"
+          target="_blank"
+          class="text-text-muted no-underline transition-colors hover:text-text"
+        >
           How are these checks determined? &rarr;
         </a>
       </div>
@@ -87,7 +120,9 @@ const totalChecks = agents[0]?.checks.length ?? 0;
         display: flex;
         align-items: center;
         justify-content: center;
-        transition: transform 0.12s ease, box-shadow 0.12s ease;
+        transition:
+          transform 0.12s ease,
+          box-shadow 0.12s ease;
       }
 
       .cell-anchor:hover,
@@ -160,6 +195,5 @@ const totalChecks = agents[0]?.checks.length ?? 0;
         border: 1.5px solid var(--color-red-border);
       }
     </style>
-
   </body>
 </html>
