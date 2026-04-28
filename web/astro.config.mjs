@@ -8,6 +8,9 @@ import react from '@astrojs/react';
 export default defineConfig({
   vite: {
     plugins: [tailwindcss()],
+    preview: {
+      allowedHosts: ['acp-verifier-production.up.railway.app', 'areweacpyet.com'],
+    },
   },
 
   integrations: [react()],
