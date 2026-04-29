@@ -1,0 +1,39 @@
+---
+import "../styles/global.css";
+import mockData from "../data/mock-results.json";
+import StatusPill from "../components/StatusPill";
+
+export function getStaticPaths() {
+  return mockData.agents.map((a) => ({ params: { agent: a.slug } }));
+}
+
+const { agent: slug } = Astro.params;
+const agent = mockData.agents.find((a) => a.slug === slug)!;
+---
+
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <meta name="viewport" content="width=device-width" />
+    <meta name="generator" content={Astro.generator} />
+    <title>Is {agent.name} ACP yet?</title>
+  </head>
+  <body class="min-h-screen bg-bg text-text antialiased">
+    <div class="max-w-5xl mx-auto px-7">
+      <header class="pt-24 pb-12 text-center">
+        <a href="/">
+          <img
+            src="/logos/acp.svg"
+            alt="ACP"
+            class="mb-5 h-10 opacity-70 inline-block"
+          />
+        </a>
+        <h1 class="text-5xl font-bold tracking-tighter leading-none text-text">
+          Is <span class="text-green underline decoration-green-border decoration-2 underline-offset-4">{agent.name}</span> ACP yet?
+        </h1>
+        <StatusPill client:load />
+      </header>
+    </div>
+  </body>
+</html>
