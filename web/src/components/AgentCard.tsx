@@ -126,9 +126,10 @@ export default function AgentCard({
 }: AgentCardProps) {
   const passed = checks.filter((c) => c.status === "pass").length;
   const pct = Math.round((passed / checks.length) * 100);
+  const logo = logoPath(slug);
 
   return (
-    <CursorGlowCard className="group relative p-6">
+    <CursorGlowCard className="group relative p-6" glowImageSrc={logo}>
       <Link
         to={`/${slug}`}
         aria-label={`View ${name} details`}
@@ -145,7 +146,7 @@ export default function AgentCard({
         </div>
         <div className="w-8 h-8 flex items-center justify-center shrink-0">
           <img
-            src={logoPath(slug)}
+            src={logo}
             alt={name}
             className="w-8 h-8 grayscale opacity-50 transition-[filter,opacity] duration-200 group-hover:grayscale-0 group-hover:opacity-100"
           />

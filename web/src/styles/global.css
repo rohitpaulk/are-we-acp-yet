@@ -59,12 +59,69 @@
   opacity: 1;
 }
 
+.cursor-glow-card:has(.cursor-glow-card-logo-glow)::before {
+  display: none;
+}
+
+.cursor-glow-card-logo-glow {
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+  opacity: 0;
+  transition: opacity 0.3s ease;
+  pointer-events: none;
+}
+
+.cursor-glow-card:hover .cursor-glow-card-logo-glow {
+  opacity: 1;
+}
+
+.cursor-glow-card-logo-glow img {
+  position: absolute;
+  left: var(--cursor-glow-x);
+  top: var(--cursor-glow-y);
+  width: var(--cursor-glow-size);
+  height: var(--cursor-glow-size);
+  max-width: none;
+  transform: translate(-50%, -50%);
+  object-fit: contain;
+  filter: blur(48px) saturate(1.1);
+  opacity: 0.14;
+}
+
 /* Solid inner fill — creates the 1px border gap effect */
 .cursor-glow-card-fill {
   position: absolute;
   inset: 1px;
   background-color: var(--color-surface);
   pointer-events: none;
+}
+
+.cursor-glow-card-content-glow {
+  position: absolute;
+  inset: 1px;
+  overflow: hidden;
+  opacity: 0;
+  transition: opacity 0.3s ease;
+  pointer-events: none;
+  z-index: 1;
+}
+
+.cursor-glow-card:hover .cursor-glow-card-content-glow {
+  opacity: 1;
+}
+
+.cursor-glow-card-content-glow img {
+  position: absolute;
+  left: var(--cursor-glow-x);
+  top: var(--cursor-glow-y);
+  width: var(--cursor-glow-size);
+  height: var(--cursor-glow-size);
+  max-width: none;
+  transform: translate(-50%, -50%);
+  object-fit: contain;
+  filter: blur(84px) saturate(1.05);
+  opacity: 0.04;
 }
 
 .tooltip-positioner {

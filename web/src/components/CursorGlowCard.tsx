@@ -2,11 +2,13 @@ import { useRef, useCallback, type ComponentPropsWithoutRef } from "react";
 
 interface CursorGlowCardProps extends ComponentPropsWithoutRef<"div"> {
   glowColor?: string;
+  glowImageSrc?: string;
   glowSize?: number;
 }
 
 export default function CursorGlowCard({
   glowColor,
+  glowImageSrc,
   glowSize,
   className = "",
   style,
@@ -38,7 +40,17 @@ export default function CursorGlowCard({
       style={{ ...vars, ...style }}
       {...rest}
     >
+      {glowImageSrc ? (
+        <div className="cursor-glow-card-logo-glow" aria-hidden="true">
+          <img src={glowImageSrc} alt="" />
+        </div>
+      ) : null}
       <div className="cursor-glow-card-fill" aria-hidden="true" />
+      {glowImageSrc ? (
+        <div className="cursor-glow-card-content-glow" aria-hidden="true">
+          <img src={glowImageSrc} alt="" />
+        </div>
+      ) : null}
       {children}
     </div>
   );
