@@ -19,6 +19,7 @@
     "@types/react-dom": "^19.2.3",
     "astro": "^6.1.9",
     "motion": "^12.38.0",
+    "motion-plus": "https://api.motion.dev/registry.tgz?package=motion-plus&version=2.8.0&token=aff096ce5ce43c5ff98c5ab709321f55a60c5c3f53f29583318bef107dfae721",
     "react": "^19.2.5",
     "react-dom": "^19.2.5",
     "react-wrap-balancer": "^1.1.1",
