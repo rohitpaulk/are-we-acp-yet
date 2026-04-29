@@ -110,7 +110,7 @@ function CheckCell({
           />
         }
         closeOnClick={false}
-        className="cell-anchor"
+        className="cell-anchor cursor-pointer"
       >
         <span className={`cell ${check.status}`} aria-hidden="true">
           {check.status === "pass" ? <CheckIcon /> : <XIcon />}
@@ -136,7 +136,7 @@ export default function AgentCard({
   const pct = Math.round((passed / checks.length) * 100);
 
   return (
-    <div className="relative bg-surface border border-border p-6 transition-colors hover:border-border-hover">
+    <div className="group relative bg-surface border border-border p-6 transition-colors hover:border-border-hover">
       <a
         href={`/${slug}`}
         aria-label={`View ${name} details`}
@@ -155,7 +155,7 @@ export default function AgentCard({
           <img
             src={logoPath(slug)}
             alt={name}
-            className="w-8 h-8 brightness-0 invert opacity-70"
+            className="w-8 h-8 grayscale opacity-50 transition-[filter,opacity] duration-200 group-hover:grayscale-0 group-hover:opacity-100"
           />
         </div>
       </div>
