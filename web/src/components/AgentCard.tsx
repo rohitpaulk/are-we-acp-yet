@@ -169,9 +169,11 @@ export default function AgentCard({
                 collisionPadding={12}
               >
                 <Popover.Popup className="tooltip-popup cell-tooltip">
-                  {check && (
-                    <PopoverContent check={check} agentSlug={slug} />
-                  )}
+                  <Popover.Viewport className="cell-tooltip-viewport">
+                    {check && (
+                      <PopoverContent check={check} agentSlug={slug} />
+                    )}
+                  </Popover.Viewport>
                 </Popover.Popup>
               </Popover.Positioner>
             </Popover.Portal>

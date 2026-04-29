@@ -134,6 +134,17 @@
 
 .tooltip-positioner {
   z-index: 50;
+  width: var(--positioner-width);
+  height: var(--positioner-height);
+  transition:
+    top 0.15s ease,
+    left 0.15s ease,
+    right 0.15s ease,
+    bottom 0.15s ease;
+}
+
+.tooltip-positioner[data-instant] {
+  transition-duration: 0s;
 }
 
 .tooltip-popup {
@@ -298,6 +309,19 @@
 }
 
 .cell-tooltip[data-instant] {
+  transition-duration: 0s;
+}
+
+.cell-tooltip-viewport > [data-current] {
+  opacity: 1;
+  transition: opacity 0.12s ease;
+}
+
+.cell-tooltip-viewport > [data-previous] {
+  display: none;
+}
+
+.cell-tooltip-viewport[data-instant] > [data-current] {
   transition-duration: 0s;
 }
 
