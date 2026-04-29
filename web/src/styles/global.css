@@ -1,7 +1,7 @@
 @import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;700&family=Space+Grotesk:wght@400;500;600;700;800&display=swap');
 @import "tailwindcss";
-@source "../../src/**/*.astro";
-@source "../../src/**/*.tsx";
+@source "../../index.html";
+@source "../**/*.tsx";
 
 @theme {
   --color-bg: #0b0d0f;
@@ -73,4 +73,194 @@
   font-size: 0.75rem;
   text-align: center;
   white-space: nowrap;
+}
+
+.check-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(28px, 1fr));
+  gap: 4px;
+}
+
+.cell-anchor {
+  position: relative;
+  display: flex;
+  width: 100%;
+  aspect-ratio: 1;
+  align-items: center;
+  justify-content: center;
+  border: 0;
+  appearance: none;
+  background: transparent;
+  padding: 0;
+  cursor: pointer;
+  font: inherit;
+}
+
+.cell {
+  display: flex;
+  width: 100%;
+  height: 100%;
+  align-items: center;
+  justify-content: center;
+  border-radius: 0;
+  transition:
+    transform 0.12s ease,
+    box-shadow 0.12s ease;
+}
+
+.cell-anchor:hover,
+.cell-anchor[data-popup-open] {
+  z-index: 10;
+}
+
+.cell-anchor:hover .cell,
+.cell-anchor[data-popup-open] .cell {
+  transform: scale(1.25);
+}
+
+.cell.pass {
+  border: 1.5px solid var(--color-green-border);
+  background: var(--color-green-bg);
+  color: var(--color-green);
+}
+
+.cell-anchor:hover .cell.pass,
+.cell-anchor[data-popup-open] .cell.pass {
+  background: var(--color-green-bg-hover);
+  box-shadow: 0 0 12px rgba(45, 212, 104, 0.15);
+}
+
+.cell.fail {
+  border: 1.5px solid var(--color-red-border);
+  background: var(--color-red-bg);
+  color: var(--color-red);
+}
+
+.cell-anchor:hover .cell.fail,
+.cell-anchor[data-popup-open] .cell.fail {
+  background: var(--color-red-bg-hover);
+  box-shadow: 0 0 12px rgba(240, 72, 72, 0.15);
+}
+
+.check-card {
+  scroll-margin-top: 24px;
+  border: 1px solid var(--color-border);
+  background: var(--color-surface);
+  transition:
+    border-color 0.12s ease,
+    background-color 0.12s ease;
+}
+
+.check-card:hover,
+.check-card[open] {
+  border-color: var(--color-border-hover);
+  background: var(--color-surface-hover);
+}
+
+.check-card:target {
+  border-color: var(--color-text-muted);
+}
+
+.check-summary {
+  display: flex;
+  min-height: 56px;
+  cursor: pointer;
+  list-style: none;
+  align-items: center;
+  gap: 16px;
+  padding: 10px 14px;
+}
+
+.check-summary::-webkit-details-marker {
+  display: none;
+}
+
+.check-status-icon {
+  display: inline-flex;
+  width: 24px;
+  height: 24px;
+  flex-shrink: 0;
+  align-items: center;
+  justify-content: center;
+  border: 1.5px solid;
+}
+
+.check-status-icon.pass {
+  border-color: var(--color-green-border);
+  background: var(--color-green-bg);
+  color: var(--color-green);
+}
+
+.check-status-icon.fail {
+  border-color: var(--color-red-border);
+  background: var(--color-red-bg);
+  color: var(--color-red);
+}
+
+.check-status-badge {
+  border: 1px solid;
+  padding: 4px 8px;
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  line-height: 1;
+  text-transform: uppercase;
+}
+
+.check-status-badge.pass {
+  border-color: var(--color-green-border);
+  background: var(--color-green-bg);
+  color: var(--color-green);
+}
+
+.check-status-badge.fail {
+  border-color: var(--color-red-border);
+  background: var(--color-red-bg);
+  color: var(--color-red);
+}
+
+.check-chevron {
+  transition: transform 0.12s ease;
+}
+
+.check-card[open] .check-chevron {
+  transform: rotate(180deg);
+}
+
+.check-body {
+  border-top: 1px solid var(--color-border);
+  padding: 0 14px 14px;
+}
+
+.check-detail-panel {
+  margin-top: 14px;
+  border: 1px solid var(--color-border);
+  background: rgba(11, 13, 15, 0.42);
+  padding: 14px;
+}
+
+.check-detail-panel p {
+  margin: 0;
+  color: var(--color-text-dim);
+  font-size: 0.875rem;
+  line-height: 1.55;
+}
+
+.check-detail-panel.result-pass {
+  border-color: var(--color-green-border);
+  background: var(--color-green-bg);
+}
+
+.check-detail-panel.result-fail {
+  border-color: var(--color-red-border);
+  background: var(--color-red-bg);
+}
+
+.check-detail-label {
+  margin-bottom: 6px;
+  color: var(--color-text-muted);
+  font-size: 0.65rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
 }
