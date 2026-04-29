@@ -1,5 +1,5 @@
 import { useRef, useState } from "react";
-import { Tooltip } from "@base-ui/react/tooltip";
+import { Popover } from "@base-ui/react/popover";
 import { Link } from "react-router";
 import Balancer from "react-wrap-balancer";
 
@@ -29,7 +29,7 @@ function logoPath(slug: string) {
   return `/logos/${map[slug] ?? slug}.svg`;
 }
 
-function TooltipContent({
+function PopoverContent({
   check,
   agentSlug,
 }: {
@@ -68,15 +68,18 @@ function CheckCell({
 }: {
   check: Check;
   agentSlug: string;
-  handle: Tooltip.Handle<Check>;
+  handle: Popover.Handle<Check>;
 }) {
   const statusLabel = check.status === "pass" ? "Passed" : "Failed";
 
   return (
     <div className="cell-anchor-wrapper">
-      <Tooltip.Trigger
+      <Popover.Trigger
         handle={handle}
         payload={check}
+        openOnHover
+        delay={0}
+        closeDelay={120}
         render={
           <Link
             to={`/${agentSlug}#check-${check.slug}`}
@@ -88,7 +91,7 @@ function CheckCell({
         <span className={`cell ${check.status}`} aria-hidden="true">
           {check.status === "pass" ? <CheckIcon /> : <XIcon />}
         </span>
-      </Tooltip.Trigger>
+      </Popover.Trigger>
     </div>
   );
 }
@@ -102,9 +105,9 @@ export default function AgentCard({
   const pct = Math.round((passed / checks.length) * 100);
   const logo = logoPath(slug);
 
-  const tooltipHandleRef = useRef<Tooltip.Handle<Check> | null>(null);
-  if (!tooltipHandleRef.current) tooltipHandleRef.current = Tooltip.createHandle<Check>();
-  const tooltipHandle = tooltipHandleRef.current;
+  const popoverHandleRef = useRef<Popover.Handle<Check> | null>(null);
+  if (!popoverHandleRef.current) popoverHandleRef.current = Popover.createHandle<Check>();
+  const popoverHandle = popoverHandleRef.current;
   const [anchorEl, setAnchorEl] = useState<Element | null>(null);
   const lastPayloadRef = useRef<Check | null>(null);
 
@@ -132,51 +135,49 @@ export default function AgentCard({
           />
         </div>
       </div>
-      <Tooltip.Provider delay={0} closeDelay={120} timeout={400}>
-        <div className="relative z-10 check-grid">
-          {checks.map((check) => (
-            <CheckCell
-              key={check.slug}
-              check={check}
-              agentSlug={slug}
-              handle={tooltipHandle}
-            />
-          ))}
-        </div>
-        <Tooltip.Root
-          handle={tooltipHandle}
-          onOpenChange={(open, eventDetails) => {
-            if (open && eventDetails.trigger) {
-              setAnchorEl(eventDetails.trigger);
-            }
-          }}
-        >
-          {({ payload }) => {
-            if (payload) {
-              lastPayloadRef.current = payload;
-            }
-            const check = payload ?? lastPayloadRef.current;
+      <div className="relative z-10 check-grid">
+        {checks.map((check) => (
+          <CheckCell
+            key={check.slug}
+            check={check}
+            agentSlug={slug}
+            handle={popoverHandle}
+          />
+        ))}
+      </div>
+      <Popover.Root
+        handle={popoverHandle}
+        onOpenChange={(open, eventDetails) => {
+          if (open && eventDetails.trigger) {
+            setAnchorEl(eventDetails.trigger);
+          }
+        }}
+      >
+        {({ payload }) => {
+          if (payload) {
+            lastPayloadRef.current = payload;
+          }
+          const check = payload ?? lastPayloadRef.current;
 
-            return (
-              <Tooltip.Portal keepMounted>
-                <Tooltip.Positioner
-                  className="tooltip-positioner"
-                  anchor={anchorEl}
-                  side="top"
-                  sideOffset={8}
-                  collisionPadding={12}
-                >
-                  <Tooltip.Popup className="tooltip-popup cell-tooltip">
-                    {check && (
-                      <TooltipContent check={check} agentSlug={slug} />
-                    )}
-                  </Tooltip.Popup>
-                </Tooltip.Positioner>
-              </Tooltip.Portal>
-            );
-          }}
-        </Tooltip.Root>
-      </Tooltip.Provider>
+          return (
+            <Popover.Portal keepMounted>
+              <Popover.Positioner
+                className="tooltip-positioner"
+                anchor={anchorEl}
+                side="top"
+                sideOffset={8}
+                collisionPadding={12}
+              >
+                <Popover.Popup className="tooltip-popup cell-tooltip">
+                  {check && (
+                    <PopoverContent check={check} agentSlug={slug} />
+                  )}
+                </Popover.Popup>
+              </Popover.Positioner>
+            </Popover.Portal>
+          );
+        }}
+      </Popover.Root>
     </CursorGlowCard>
   );
 }
