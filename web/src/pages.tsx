@@ -14,8 +14,7 @@ const failureMessages: Record<string, Record<string, string>> = {
   codex: {
     "supports-session-resume":
       "Codex returned a new session instead of restoring the previous session state.",
-    "http-transport":
-      "Codex did not expose a streamable HTTP ACP endpoint during verification.",
+    "http-transport": "Codex did not expose a streamable HTTP ACP endpoint during verification.",
     "tool-call-streaming":
       "Codex buffered tool output until completion instead of sending incremental updates.",
     "tool-call-cancellation":
@@ -28,8 +27,7 @@ const failureMessages: Record<string, Record<string, string>> = {
       "Codex did not advertise parameterized resource templates in its capabilities.",
     "prompt-arguments":
       "Codex returned the prompt, but did not validate or apply the supplied arguments.",
-    "sampling-basic":
-      "Codex did not issue a sampling request back through the ACP client.",
+    "sampling-basic": "Codex did not issue a sampling request back through the ACP client.",
   },
   copilot: {
     "supports-session-close":
@@ -38,24 +36,19 @@ const failureMessages: Record<string, Record<string, string>> = {
       "Copilot started a fresh session when asked to resume a previously created one.",
     "init-protocol-version":
       "Copilot did not negotiate the requested protocol version during initialization.",
-    "tool-call-error":
-      "Copilot returned an unstructured failure for an invalid tool call.",
+    "tool-call-error": "Copilot returned an unstructured failure for an invalid tool call.",
     "tool-call-cancellation":
       "Copilot left the in-flight tool running after the verifier sent cancellation.",
-    "resource-list":
-      "Copilot did not return resource metadata in the expected ACP response shape.",
+    "resource-list": "Copilot did not return resource metadata in the expected ACP response shape.",
     "resource-read":
       "Copilot could not read back the resource URI returned by the verifier fixture.",
     "resource-subscribe":
       "Copilot did not keep a resource subscription open for update notifications.",
-    "resource-templates":
-      "Copilot did not expose any resource URI templates to the client.",
+    "resource-templates": "Copilot did not expose any resource URI templates to the client.",
     "prompt-list":
       "Copilot did not return prompt definitions with names, descriptions, and arguments.",
-    "prompt-get":
-      "Copilot could not render the requested prompt into model-ready messages.",
-    "prompt-arguments":
-      "Copilot ignored required prompt arguments instead of validating them.",
+    "prompt-get": "Copilot could not render the requested prompt into model-ready messages.",
+    "prompt-arguments": "Copilot ignored required prompt arguments instead of validating them.",
     "log-levels": "Copilot emitted logs, but did not honor the requested severity filter.",
     "sampling-basic": "Copilot did not call back to the client with a sampling request.",
   },
@@ -70,8 +63,7 @@ const failureMessages: Record<string, Record<string, string>> = {
 function formatHumanDate(value: string) {
   const [year, month, day] = value.split("-").map(Number);
   const date = new Date(year, month - 1, day);
-  const suffix =
-    day >= 11 && day <= 13 ? "th" : (["th", "st", "nd", "rd"][day % 10] ?? "th");
+  const suffix = day >= 11 && day <= 13 ? "th" : (["th", "st", "nd", "rd"][day % 10] ?? "th");
 
   return `${day}${suffix} ${date.toLocaleString("en", {
     month: "long",
@@ -91,33 +83,41 @@ function resultMessage(agent: Agent, check: Check) {
 
 function QuestionHeadline({ agentName }: { agentName?: string }) {
   return (
-    <AnimateView
-      name="acp-headline"
-      transition={{ type: spring, bounce: 0, duration: 0.5 }}
-    >
-      <h1 className="text-5xl leading-none font-bold tracking-tighter text-text">
-        {agentName ? (
-          <>
-            Is{" "}
-            <span className="text-green underline decoration-green-border decoration-2 underline-offset-4">
-              {agentName}
-            </span>{" "}
-          </>
-        ) : (
-          "Are we "
-        )}
-        ACP yet?
-      </h1>
-    </AnimateView>
+    <h1 className="flex flex-wrap items-baseline justify-center gap-x-3 gap-y-2 text-5xl leading-none font-bold tracking-tighter text-text">
+      <AnimateView
+        name="acp-headline-prefix"
+        transition={{ type: spring, bounce: 0, duration: 0.5 }}
+      >
+        <span>{agentName ? "Is" : "Are"}</span>
+      </AnimateView>
+      <AnimateView
+        name="acp-headline-subject"
+        transition={{ type: spring, bounce: 0, duration: 0.5 }}
+      >
+        <span
+          className={
+            agentName
+              ? "text-green underline decoration-green-border decoration-2 underline-offset-4"
+              : undefined
+          }
+        >
+          {agentName ?? "we"}
+        </span>
+      </AnimateView>
+      <AnimateView
+        name="acp-headline-suffix"
+        transition={{ type: spring, bounce: 0, duration: 0.5 }}
+      >
+        <span>ACP yet?</span>
+      </AnimateView>
+    </h1>
   );
 }
 
 export function HomePage() {
   const agents = [...mockData.agents].sort((a, b) => {
-    const pctA =
-      a.checks.filter((check) => check.status === "pass").length / a.checks.length;
-    const pctB =
-      b.checks.filter((check) => check.status === "pass").length / b.checks.length;
+    const pctA = a.checks.filter((check) => check.status === "pass").length / a.checks.length;
+    const pctB = b.checks.filter((check) => check.status === "pass").length / b.checks.length;
     return pctB - pctA;
   });
   const lastUpdated = formatHumanDate(mockData.lastUpdated);
