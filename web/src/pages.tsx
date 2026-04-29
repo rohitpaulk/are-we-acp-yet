@@ -2,6 +2,8 @@ import { useEffect } from "react";
 import { Link, useLocation } from "react-router";
 
 import AgentCard from "./components/AgentCard";
+import { CheckIcon } from "./components/CheckIcon";
+import { XIcon } from "./components/XIcon";
 import mockData from "./data/mock-results.json";
 
 export type Agent = (typeof mockData.agents)[number];
@@ -178,32 +180,9 @@ export function AgentPage({ agent }: { agent: Agent }) {
                     aria-hidden="true"
                   >
                     {didPass ? (
-                      <svg
-                        width="13"
-                        height="13"
-                        viewBox="0 0 24 24"
-                        fill="none"
-                        stroke="currentColor"
-                        strokeWidth="3"
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                      >
-                        <path d="M20 6 9 17l-5-5" />
-                      </svg>
+                      <CheckIcon size={13} />
                     ) : (
-                      <svg
-                        width="13"
-                        height="13"
-                        viewBox="0 0 24 24"
-                        fill="none"
-                        stroke="currentColor"
-                        strokeWidth="3"
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                      >
-                        <path d="M18 6 6 18" />
-                        <path d="m6 6 12 12" />
-                      </svg>
+                      <XIcon size={13} />
                     )}
                   </span>
                   <span className="min-w-0">

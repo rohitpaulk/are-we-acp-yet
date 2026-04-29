@@ -7,8 +7,8 @@ export function XIcon({ size = 14 }: { size?: number }) {
       fill="none"
       stroke="currentColor"
       strokeWidth={3}
-      strokeLinecap="round"
-      strokeLinejoin="round"
+      strokeLinecap="square"
+      strokeLinejoin="miter"
     >
       <path d="M18 6 6 18" />
       <path d="m6 6 12 12" />

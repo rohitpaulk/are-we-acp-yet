@@ -7,8 +7,8 @@ export function CheckIcon({ size = 14 }: { size?: number }) {
       fill="none"
       stroke="currentColor"
       strokeWidth={3}
-      strokeLinecap="round"
-      strokeLinejoin="round"
+      strokeLinecap="square"
+      strokeLinejoin="miter"
     >
       <path d="M20 6 9 17l-5-5" />
     </svg>
