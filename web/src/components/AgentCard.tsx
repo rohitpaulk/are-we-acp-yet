@@ -59,7 +59,13 @@ function XIcon({ size = 14 }: { size?: number }) {
   );
 }
 
-function TooltipContent({ check }: { check: Check }) {
+function TooltipContent({
+  check,
+  agentSlug,
+}: {
+  check: Check;
+  agentSlug: string;
+}) {
   return (
     <>
       <div className="flex items-center gap-1.5 font-bold text-sm mb-2.5">
@@ -76,7 +82,7 @@ function TooltipContent({ check }: { check: Check }) {
         {check.description}
       </Balancer>
       <a
-        href={`/checks/${check.slug}`}
+        href={`/${agentSlug}#check-${check.slug}`}
         className="inline-flex items-center gap-1 mt-3 text-xs font-semibold text-text-muted no-underline transition-colors hover:text-text"
       >
         View details &rarr;
@@ -85,13 +91,24 @@ function TooltipContent({ check }: { check: Check }) {
   );
 }
 
-function CheckCell({ check }: { check: Check }) {
+function CheckCell({
+  check,
+  agentSlug,
+}: {
+  check: Check;
+  agentSlug: string;
+}) {
   const statusLabel = check.status === "pass" ? "Passed" : "Failed";
 
   return (
     <Tooltip.Root>
       <Tooltip.Trigger
-        aria-label={`${check.label}: ${statusLabel}`}
+        render={
+          <a
+            href={`/${agentSlug}#check-${check.slug}`}
+            aria-label={`${check.label}: ${statusLabel}`}
+          />
+        }
         closeOnClick={false}
         className="cell-anchor"
       >
@@ -102,7 +119,7 @@ function CheckCell({ check }: { check: Check }) {
       <Tooltip.Portal>
         <Tooltip.Positioner sideOffset={8}>
           <Tooltip.Popup className="tooltip-popup">
-            <TooltipContent check={check} />
+            <TooltipContent check={check} agentSlug={agentSlug} />
           </Tooltip.Popup>
         </Tooltip.Positioner>
       </Tooltip.Portal>
@@ -119,8 +136,13 @@ export default function AgentCard({
   const pct = Math.round((passed / checks.length) * 100);
 
   return (
-    <div className="bg-surface border border-border p-6 transition-colors hover:border-border-hover">
-      <div className="flex items-center justify-between mb-5">
+    <div className="relative bg-surface border border-border p-6 transition-colors hover:border-border-hover">
+      <a
+        href={`/${slug}`}
+        aria-label={`View ${name} details`}
+        className="absolute inset-0 z-0"
+      />
+      <div className="relative z-10 flex items-center justify-between mb-5 pointer-events-none">
         <div>
           <h2 className="text-xl font-bold tracking-tight leading-tight">
             {name}
@@ -138,9 +160,9 @@ export default function AgentCard({
         </div>
       </div>
       <Tooltip.Provider delay={0} closeDelay={150}>
-        <div className="check-grid">
+        <div className="relative z-10 check-grid">
           {checks.map((check) => (
-            <CheckCell key={check.slug} check={check} />
+            <CheckCell key={check.slug} check={check} agentSlug={slug} />
           ))}
         </div>
       </Tooltip.Provider>
