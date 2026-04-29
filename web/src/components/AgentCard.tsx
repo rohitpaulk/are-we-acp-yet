@@ -117,7 +117,7 @@ function CheckCell({
         </span>
       </Tooltip.Trigger>
       <Tooltip.Portal>
-        <Tooltip.Positioner sideOffset={8}>
+        <Tooltip.Positioner sideOffset={8} className="tooltip-positioner">
           <Tooltip.Popup className="tooltip-popup">
             <TooltipContent check={check} agentSlug={agentSlug} />
           </Tooltip.Popup>

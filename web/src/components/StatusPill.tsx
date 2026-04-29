@@ -12,7 +12,7 @@ export default function StatusPill() {
           <span>Status: Not Ready</span>
         </Tooltip.Trigger>
         <Tooltip.Portal>
-          <Tooltip.Positioner sideOffset={8}>
+          <Tooltip.Positioner sideOffset={8} className="tooltip-positioner">
             <Tooltip.Popup className="tooltip-popup status-tooltip-popup">
               80% checks required to pass.
             </Tooltip.Popup>
