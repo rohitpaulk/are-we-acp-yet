@@ -1,5 +1,3 @@
-import { spring } from "motion";
-import { AnimateView } from "motion-plus/animate-view";
 import { useEffect } from "react";
 import { Link, useLocation } from "react-router";
 
@@ -84,32 +82,17 @@ function resultMessage(agent: Agent, check: Check) {
 function QuestionHeadline({ agentName }: { agentName?: string }) {
   return (
     <h1 className="flex flex-wrap items-baseline justify-center gap-x-3 gap-y-2 text-5xl leading-none font-bold tracking-tighter text-text">
-      <AnimateView
-        name="acp-headline-prefix"
-        transition={{ type: spring, bounce: 0, duration: 0.5 }}
+      <span>{agentName ? "Is" : "Are"}</span>
+      <span
+        className={
+          agentName
+            ? "text-green underline decoration-green-border decoration-2 underline-offset-4"
+            : undefined
+        }
       >
-        <span>{agentName ? "Is" : "Are"}</span>
-      </AnimateView>
-      <AnimateView
-        name="acp-headline-subject"
-        transition={{ type: spring, bounce: 0, duration: 0.5 }}
-      >
-        <span
-          className={
-            agentName
-              ? "text-green underline decoration-green-border decoration-2 underline-offset-4"
-              : undefined
-          }
-        >
-          {agentName ?? "we"}
-        </span>
-      </AnimateView>
-      <AnimateView
-        name="acp-headline-suffix"
-        transition={{ type: spring, bounce: 0, duration: 0.5 }}
-      >
-        <span>ACP yet?</span>
-      </AnimateView>
+        {agentName ?? "we"}
+      </span>
+      <span>ACP yet?</span>
     </h1>
   );
 }
