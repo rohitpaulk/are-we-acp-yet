@@ -17,41 +17,40 @@ test.each(registry.agentSlugs)("terminal commands (%s)", async (slug) => {
   const terminalClient = new TestTerminalClient();
   const updates: acp.SessionUpdate[] = [];
 
-  using proc = new AgentProcess(agent, {
-    client: {
-      async sessionUpdate(params) {
-        updates.push(params.update);
-      },
-      async requestPermission(params) {
-        const allowedOption = params.options.find(
-          (option) => option.kind === "allow_once" || option.kind === "allow_always",
-        );
-
-        if (!allowedOption) {
-          return { outcome: { outcome: "cancelled" } };
-        }
-
-        return { outcome: { outcome: "selected", optionId: allowedOption.optionId } };
-      },
-      createTerminal: terminalClient.createTerminal,
-      terminalOutput: terminalClient.terminalOutput,
-      waitForTerminalExit: terminalClient.waitForTerminalExit,
-      killTerminal: terminalClient.killTerminal,
-      releaseTerminal: terminalClient.releaseTerminal,
+  using proc = new AgentProcess(agent);
+  const connection = proc.connect({
+    async sessionUpdate(params) {
+      updates.push(params.update);
     },
+    async requestPermission(params) {
+      const allowedOption = params.options.find(
+        (option) => option.kind === "allow_once" || option.kind === "allow_always",
+      );
+
+      if (!allowedOption) {
+        return { outcome: { outcome: "cancelled" } };
+      }
+
+      return { outcome: { outcome: "selected", optionId: allowedOption.optionId } };
+    },
+    createTerminal: terminalClient.createTerminal,
+    terminalOutput: terminalClient.terminalOutput,
+    waitForTerminalExit: terminalClient.waitForTerminalExit,
+    killTerminal: terminalClient.killTerminal,
+    releaseTerminal: terminalClient.releaseTerminal,
   });
 
   try {
-    await initAndAuth(proc, agent, { terminal: true });
+    await initAndAuth(connection, agent, { terminal: true });
 
-    const session = await proc.connection.newSession({
+    const session = await connection.newSession({
       cwd: "/tmp",
       mcpServers: [],
     });
 
     expect(session.sessionId).toBeTruthy();
 
-    await proc.connection.prompt({
+    await connection.prompt({
       sessionId: session.sessionId,
       prompt: [
         {

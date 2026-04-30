@@ -13,13 +13,14 @@ test.each(registry.agentSlugs)(
     const agent = registry.agentBySlug(slug);
     const updates: acp.SessionUpdate[] = [];
 
-    using proc = new AgentProcess(agent, {
+    using proc = new AgentProcess(agent);
+    const connection = proc.connect({
       async sessionUpdate(params) {
         updates.push(params.update);
       },
     });
 
-    const initResult = await initAndAuth(proc, agent);
+    const initResult = await initAndAuth(connection, agent);
 
     if (initResult.agentCapabilities?.sessionCapabilities?.resume) {
       check.pass("supports-session-resume");

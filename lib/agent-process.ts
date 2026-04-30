@@ -4,22 +4,19 @@ import * as acp from "@agentclientprotocol/sdk";
 import type { Agent } from "./agent";
 
 type AgentProcessOptions = {
-  client?: Partial<acp.Client>;
   mounts?: { source: string; target: string; readonly?: boolean }[];
 };
 
 export class AgentProcess {
-  readonly connection: acp.ClientSideConnection;
+  connection?: acp.ClientSideConnection;
   private childProcess: ChildProcess;
 
-  constructor(agent: Agent, clientOrOptions?: Partial<acp.Client> | AgentProcessOptions) {
-    const options = isAgentProcessOptions(clientOrOptions)
-      ? clientOrOptions
-      : { client: clientOrOptions };
+  constructor(agent: Agent, options: AgentProcessOptions = {}) {
     const envFlags = agent.envVars.flatMap((v) => {
       const value = agent.envValue(v);
       return value === undefined ? [] : ["-e", `${v}=${value}`];
     });
+
     const mountFlags = (options.mounts ?? []).flatMap((mount) => [
       "--mount",
       `type=bind,source=${mount.source},target=${mount.target}${mount.readonly ? ",readonly" : ""}`,
@@ -32,29 +29,33 @@ export class AgentProcess {
         stdio: ["pipe", "pipe", "inherit"],
       },
     );
+  }
+
+  connect(clientOptions: Partial<acp.Client> = {}): acp.ClientSideConnection {
+    if (this.connection) {
+      throw new Error("AgentProcess already has an active connection");
+    }
 
     const input = Writable.toWeb(this.childProcess.stdin!);
     const output = Readable.toWeb(this.childProcess.stdout!) as ReadableStream<Uint8Array>;
 
-    const fullClient: acp.Client = {
+    const client: acp.Client = {
       async requestPermission() {
         throw new Error("denied by test client");
       },
+
       async sessionUpdate() {},
-      ...options.client,
+
+      ...clientOptions,
     };
 
     const stream = acp.ndJsonStream(input, output);
-    this.connection = new acp.ClientSideConnection((_agent) => fullClient, stream);
+    this.connection = new acp.ClientSideConnection((_agent) => client, stream);
+
+    return this.connection;
   }
 
   [Symbol.dispose](): void {
     this.childProcess.kill();
   }
-}
-
-function isAgentProcessOptions(
-  value: Partial<acp.Client> | AgentProcessOptions | undefined,
-): value is AgentProcessOptions {
-  return !!value && ("client" in value || "mounts" in value);
 }

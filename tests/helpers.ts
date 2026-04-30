@@ -4,11 +4,11 @@ import * as acp from "@agentclientprotocol/sdk";
 import type { Agent } from "../lib/agent";
 
 export async function initAndAuth(
-  proc: { connection: acp.ClientSideConnection },
+  connection: acp.ClientSideConnection,
   agent: Agent,
   clientCapabilities: acp.ClientCapabilities = {},
 ) {
-  const initResult = await proc.connection.initialize({
+  const initResult = await connection.initialize({
     protocolVersion: acp.PROTOCOL_VERSION,
     clientCapabilities,
     clientInfo: { name: "acp-verifier", version: "0.1.0" },
@@ -23,7 +23,7 @@ export async function initAndAuth(
     );
 
     if (envVarMethod) {
-      await proc.connection.authenticate({ methodId: envVarMethod.id });
+      await connection.authenticate({ methodId: envVarMethod.id });
     }
   }
 

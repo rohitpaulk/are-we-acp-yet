@@ -9,19 +9,20 @@ test.each(registry.agentSlugs)("session/close succeeds (%s)", async (slug) => {
   const check = checkCollectorRegistry.get(slug);
   const agent = registry.agentBySlug(slug);
   using proc = new AgentProcess(agent);
-  const initResult = await initAndAuth(proc, agent);
+  const connection = proc.connect();
+  const initResult = await initAndAuth(connection, agent);
 
   if (!initResult.agentCapabilities?.sessionCapabilities?.close) {
     check.fail("supports-session-close");
     return;
   }
 
-  const session = await proc.connection.newSession({
+  const session = await connection.newSession({
     cwd: "/tmp",
     mcpServers: [],
   });
 
-  await proc.connection.closeSession({
+  await connection.closeSession({
     sessionId: session.sessionId,
   });
 

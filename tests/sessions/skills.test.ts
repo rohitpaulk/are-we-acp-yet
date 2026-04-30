@@ -23,17 +23,17 @@ test.each(registry.agentSlugs)("loads skills as slash commands (%s)", async (slu
   try {
     using proc = new AgentProcess(agent, {
       mounts: [{ source: hostWorkspace, target: CONTAINER_WORKSPACE }],
-      client: {
-        async sessionUpdate(params) {
-          updates.push(params.update);
-        },
+    });
+    const connection = proc.connect({
+      async sessionUpdate(params) {
+        updates.push(params.update);
       },
     });
 
-    await initAndAuth(proc, agent);
+    await initAndAuth(connection, agent);
 
     const loadStart = performance.now();
-    const session = await proc.connection.newSession({
+    const session = await connection.newSession({
       cwd: CONTAINER_WORKSPACE,
       mcpServers: [],
     });

@@ -10,10 +10,11 @@ test.each(registry.agentSlugs)("responds to initialize within 500ms (%s)", async
   const agent = registry.agentBySlug(slug);
 
   using proc = new AgentProcess(agent);
+  const connection = proc.connect();
 
   const start = performance.now();
 
-  await proc.connection.initialize({
+  await connection.initialize({
     protocolVersion: acp.PROTOCOL_VERSION,
     clientCapabilities: {},
     clientInfo: { name: "acp-verifier", version: "0.1.0" },

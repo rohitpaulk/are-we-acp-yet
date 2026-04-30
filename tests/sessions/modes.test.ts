@@ -11,9 +11,10 @@ test.each(registry.agentSlugs)("can list and switch modes (%s)", async (slug) =>
   const check = checkCollectorRegistry.get(slug);
 
   using proc = new AgentProcess(agent);
-  await initAndAuth(proc, agent);
+  const connection = proc.connect();
+  await initAndAuth(connection, agent);
 
-  const session = await proc.connection.newSession({
+  const session = await connection.newSession({
     cwd: "/tmp",
     mcpServers: [],
   });
@@ -53,7 +54,7 @@ test.each(registry.agentSlugs)("can list and switch modes (%s)", async (slug) =>
 
   const switchModeStart = performance.now();
 
-  const setModeResult = await proc.connection.setSessionConfigOption({
+  const setModeResult = await connection.setSessionConfigOption({
     sessionId: session.sessionId,
     configId: modeOption.id,
     value: allModeValues.find((v) => v !== currentModeValue)!,
