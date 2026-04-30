@@ -3,6 +3,7 @@ import { Popover } from "@base-ui/react/popover";
 import { Link } from "react-router";
 import Balancer from "react-wrap-balancer";
 
+import Button from "./Button";
 import { CheckIcon } from "./CheckIcon";
 import CursorGlowCard from "./CursorGlowCard";
 import { XIcon } from "./XIcon";
@@ -92,7 +93,7 @@ function CheckCell({
   );
 }
 
-export default function AgentCard({ slug, name, checks }: AgentCardProps) {
+export default function AgentCard({ slug, name, company, checks }: AgentCardProps) {
   const passed = checks.filter((c) => c.status === "pass").length;
   const pct = Math.round((passed / checks.length) * 100);
   const logo = logoPath(slug);
@@ -109,7 +110,7 @@ export default function AgentCard({ slug, name, checks }: AgentCardProps) {
       <div className="relative z-10 flex items-center justify-between mb-5 pointer-events-none">
         <div>
           <h2 className="text-xl font-bold tracking-tight leading-tight">{name}</h2>
-          <div className="text-xs text-text-muted mt-0.5">by Anthropic</div>
+          <div className="text-xs text-text-muted mt-0.5">by {company}</div>
         </div>
         <div className="w-8 h-8 flex items-center justify-center shrink-0">
           <img
@@ -129,13 +130,7 @@ export default function AgentCard({ slug, name, checks }: AgentCardProps) {
           <div className="text-xs text-text-muted">SUCCESS RATE</div>
           <div className="font-semibold text-lg">{pct}%</div>
         </div>
-        <a
-          href="https://github.com/rohitpaulk/acp-verifier"
-          target="_blank"
-          className="inline-flex items-center gap-1.5 border border-border bg-surface px-3 py-1.5 text-xs font-semibold text-text-muted no-underline transition-colors hover:border-border-hover hover:text-text"
-        >
-          View details &rarr;
-        </a>
+        <Button href={`/${slug}`}>View details &rarr;</Button>
       </div>
       <Popover.Root
         handle={popoverHandle}
