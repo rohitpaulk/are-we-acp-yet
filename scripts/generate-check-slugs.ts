@@ -5,10 +5,24 @@ const PROJECT_ROOT = resolve(import.meta.dir, "..");
 const CHECKS_DIR = resolve(PROJECT_ROOT, "checks");
 const OUTPUT_FILE = resolve(PROJECT_ROOT, "lib/generated/check-slugs.ts");
 
-const slugs = readdirSync(CHECKS_DIR, { withFileTypes: true })
+function parseCheckFilename(filename: string): { position: number; slug: string } {
+  const match = filename.match(/^(\d+)-(.+)\.md$/);
+  if (!match) {
+    throw new Error(`Check filename must start with a numeric position: ${filename}`);
+  }
+
+  return {
+    position: Number(match[1]),
+    slug: match[2]!,
+  };
+}
+
+const checks = readdirSync(CHECKS_DIR, { withFileTypes: true })
   .filter((e) => e.isFile() && e.name.endsWith(".md"))
-  .map((e) => e.name.replace(/\.md$/, ""))
-  .sort();
+  .map((e) => parseCheckFilename(e.name))
+  .sort((a, b) => a.position - b.position);
+
+const slugs = checks.map((check) => check.slug);
 
 const unionMembers = slugs.map((s) => `  | "${s}"`).join("\n");
 

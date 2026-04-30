@@ -10,6 +10,7 @@ import { XIcon } from "./XIcon";
 
 interface Check {
   slug: string;
+  position: number;
   label: string;
   description: string;
   status: string;
@@ -85,8 +86,9 @@ function CheckCell({
 }
 
 export default function AgentCard({ slug, name, company, version_string, checks }: AgentCardProps) {
-  const passed = checks.filter((c) => c.status === "pass").length;
-  const pct = Math.round((passed / checks.length) * 100);
+  const sortedChecks = [...checks].sort((a, b) => a.position - b.position);
+  const passed = sortedChecks.filter((c) => c.status === "pass").length;
+  const pct = Math.round((passed / sortedChecks.length) * 100);
   const logo = logoPath(slug);
 
   const popoverHandleRef = useRef<Popover.Handle<Check> | null>(null);
@@ -97,7 +99,12 @@ export default function AgentCard({ slug, name, company, version_string, checks 
 
   return (
     <CursorGlowCard className="group relative p-6 pb-5" glowImageSrc={logo}>
-      <Link to={`/${slug}`} prefetch="render" aria-label={`View ${name} details`} className="absolute inset-0 z-0" />
+      <Link
+        to={`/${slug}`}
+        prefetch="render"
+        aria-label={`View ${name} details`}
+        className="absolute inset-0 z-0"
+      />
       <div className="relative z-10 flex items-center justify-between mb-5 pointer-events-none">
         <div className="flex items-center gap-3">
           <div className="w-8 h-8 flex items-center justify-center shrink-0">
@@ -117,7 +124,7 @@ export default function AgentCard({ slug, name, company, version_string, checks 
         </div>
       </div>
       <div className="relative z-10 check-grid">
-        {checks.map((check) => (
+        {sortedChecks.map((check) => (
           <CheckCell key={check.slug} check={check} agentSlug={slug} handle={popoverHandle} />
         ))}
       </div>

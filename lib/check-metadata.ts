@@ -13,6 +13,7 @@ type CheckFrontmatter = {
 
 export type CheckMetadata = {
   slug: CheckSlug;
+  position: number;
   label: string;
   description: string;
   explanationMarkdown: string;
@@ -29,19 +30,32 @@ function parseCheckFile(content: string): { frontmatter: CheckFrontmatter; body:
   };
 }
 
+function parseCheckFilename(filename: string): { position: number; slug: CheckSlug } {
+  const match = filename.match(/^(\d+)-(.+)\.md$/);
+  if (!match) {
+    throw new Error(`Check filename must start with a numeric position: ${filename}`);
+  }
+
+  return {
+    position: Number(match[1]),
+    slug: match[2] as CheckSlug,
+  };
+}
+
 export function loadCheckMetadata(): Map<CheckSlug, CheckMetadata> {
   const map = new Map<CheckSlug, CheckMetadata>();
 
-  const files = readdirSync(CHECKS_DIR, { withFileTypes: true }).filter(
-    (e) => e.isFile() && e.name.endsWith(".md"),
-  );
+  const files = readdirSync(CHECKS_DIR, { withFileTypes: true })
+    .filter((e) => e.isFile() && e.name.endsWith(".md"))
+    .sort((a, b) => a.name.localeCompare(b.name));
 
   for (const file of files) {
-    const slug = file.name.replace(/\.md$/, "") as CheckSlug;
+    const { position, slug } = parseCheckFilename(file.name);
     const raw = readFileSync(resolve(CHECKS_DIR, file.name), "utf-8");
     const { frontmatter, body } = parseCheckFile(raw);
     map.set(slug, {
       slug,
+      position,
       label: frontmatter.label,
       description: frontmatter.description,
       explanationMarkdown: body,

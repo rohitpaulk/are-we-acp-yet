@@ -26,6 +26,7 @@ export function writeResults(collectorRegistry: CheckCollectorRegistry): void {
 
       return {
         slug: meta.slug,
+        position: meta.position,
         label: meta.label,
         description: meta.description,
         explanation_markdown: marked.parse(meta.explanationMarkdown, { async: false }) as string,

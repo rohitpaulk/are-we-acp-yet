@@ -83,8 +83,9 @@ export function AgentPage({ agent }: { agent: Agent }) {
     }
   }, [agent.slug, hash]);
 
-  const passed = agent.checks.filter((check) => check.status === "pass").length;
-  const failed = agent.checks.length - passed;
+  const sortedChecks = [...agent.checks].sort((a, b) => a.position - b.position);
+  const passed = sortedChecks.filter((check) => check.status === "pass").length;
+  const failed = sortedChecks.length - passed;
 
   return (
     <main className="pb-14">
@@ -92,12 +93,12 @@ export function AgentPage({ agent }: { agent: Agent }) {
         <div>
           <h2 className="text-2xl font-bold tracking-tight">Checks</h2>
           <p className="mt-1 text-sm text-text-muted">
-            {passed} of {agent.checks.length} checks passed for {agent.name}.
+            {passed} of {sortedChecks.length} checks passed for {agent.name}.
           </p>
         </div>
         <div className="grid grid-cols-3 border border-border bg-surface text-center">
           <div className="px-4 py-2">
-            <div className="text-lg font-bold text-text">{agent.checks.length}</div>
+            <div className="text-lg font-bold text-text">{sortedChecks.length}</div>
             <div className="text-[10px] font-semibold tracking-wide text-text-muted uppercase">
               Total
             </div>
@@ -118,7 +119,7 @@ export function AgentPage({ agent }: { agent: Agent }) {
       </div>
 
       <div className="space-y-2">
-        {agent.checks.map((check) => {
+        {sortedChecks.map((check) => {
           const didPass = check.status === "pass";
           const statusLabel = didPass ? "Passed" : "Failed";
 
