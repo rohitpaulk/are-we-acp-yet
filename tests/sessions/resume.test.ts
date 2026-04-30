@@ -23,9 +23,15 @@ test.each(registry.agentSlugs)(
     const initResult = await initAndAuth(connection, agent);
 
     if (initResult.agentCapabilities?.sessionCapabilities?.resume) {
-      check.pass("supports-session-resume");
+      check.pass(
+        "supports-session-resume",
+        `${agent.name} advertised session resume support during initialization.`,
+      );
     } else {
-      check.fail("supports-session-resume");
+      check.fail(
+        "supports-session-resume",
+        `${agent.name} did not advertise session resume support during initialization.`,
+      );
     }
   },
 

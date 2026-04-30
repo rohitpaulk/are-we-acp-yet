@@ -5,67 +5,6 @@ import { CheckIcon } from "../components/CheckIcon";
 import { XIcon } from "../components/XIcon";
 import type { AgentCardProps as Agent, Check } from "../components/AgentCard";
 
-const failureMessages: Record<string, Record<string, string>> = {
-  codex: {
-    "supports-session-resume":
-      "Codex returned a new session instead of restoring the previous session state.",
-    "http-transport": "Codex did not expose a streamable HTTP ACP endpoint during verification.",
-    "tool-call-streaming":
-      "Codex buffered tool output until completion instead of sending incremental updates.",
-    "tool-call-cancellation":
-      "Codex accepted the cancellation request, but the running tool continued to completion.",
-    "tool-call-progress":
-      "Codex completed the long-running tool without sending progress notifications.",
-    "resource-subscribe":
-      "Codex listed resources, but did not emit update events after a subscription was opened.",
-    "resource-templates":
-      "Codex did not advertise parameterized resource templates in its capabilities.",
-    "prompt-arguments":
-      "Codex returned the prompt, but did not validate or apply the supplied arguments.",
-    "sampling-basic": "Codex did not issue a sampling request back through the ACP client.",
-  },
-  copilot: {
-    "supports-session-close":
-      "Copilot did not acknowledge session close with the expected cleanup response.",
-    "supports-session-resume":
-      "Copilot started a fresh session when asked to resume a previously created one.",
-    "init-protocol-version":
-      "Copilot did not negotiate the requested protocol version during initialization.",
-    "tool-call-error": "Copilot returned an unstructured failure for an invalid tool call.",
-    "tool-call-cancellation":
-      "Copilot left the in-flight tool running after the verifier sent cancellation.",
-    "resource-list": "Copilot did not return resource metadata in the expected ACP response shape.",
-    "resource-read":
-      "Copilot could not read back the resource URI returned by the verifier fixture.",
-    "resource-subscribe":
-      "Copilot did not keep a resource subscription open for update notifications.",
-    "resource-templates": "Copilot did not expose any resource URI templates to the client.",
-    "prompt-list":
-      "Copilot did not return prompt definitions with names, descriptions, and arguments.",
-    "prompt-get": "Copilot could not render the requested prompt into model-ready messages.",
-    "prompt-arguments": "Copilot ignored required prompt arguments instead of validating them.",
-    "log-levels": "Copilot emitted logs, but did not honor the requested severity filter.",
-    "sampling-basic": "Copilot did not call back to the client with a sampling request.",
-  },
-  "claude-code": {
-    "tool-call-cancellation":
-      "Claude Code acknowledged cancellation, but the verifier still observed tool output afterward.",
-    "resource-templates":
-      "Claude Code supports direct resources, but did not advertise URI template support.",
-  },
-};
-
-function resultMessage(agent: Agent, check: Check) {
-  if (check.status === "pass") {
-    return `${agent.name} passed this check in the latest verifier run.`;
-  }
-
-  return (
-    failureMessages[agent.slug]?.[check.slug] ??
-    `${agent.name} failed this check in the latest verifier run.`
-  );
-}
-
 export function AgentPage({ agent }: { agent: Agent }) {
   const { hash } = useLocation();
 
@@ -80,7 +19,9 @@ export function AgentPage({ agent }: { agent: Agent }) {
     }
   }, [agent.slug, hash]);
 
-  const sortedChecks = [...agent.checks].sort((a, b) => a.position - b.position);
+  const sortedChecks = [...agent.checks].sort(
+    (a, b) => a.position - b.position,
+  );
   const passed = sortedChecks.filter((check) => check.status === "pass").length;
   const failed = sortedChecks.length - passed;
 
@@ -95,7 +36,9 @@ export function AgentPage({ agent }: { agent: Agent }) {
         </div>
         <div className="grid grid-cols-3 border border-border bg-surface text-center">
           <div className="px-4 py-2">
-            <div className="text-lg font-bold text-text">{sortedChecks.length}</div>
+            <div className="text-lg font-bold text-text">
+              {sortedChecks.length}
+            </div>
             <div className="text-[10px] font-semibold tracking-wide text-text-muted uppercase">
               Total
             </div>
@@ -138,11 +81,15 @@ export function AgentPage({ agent }: { agent: Agent }) {
                     <span className="block truncate text-sm font-bold tracking-tight text-text">
                       {check.label}
                     </span>
-                    <span className="block truncate text-xs text-text-muted">#{check.slug}</span>
+                    <span className="block truncate text-xs text-text-muted">
+                      #{check.slug}
+                    </span>
                   </span>
                 </span>
                 <span className="ml-auto flex shrink-0 items-center gap-3">
-                  <span className={`check-status-badge ${didPass ? "pass" : "fail"}`}>
+                  <span
+                    className={`check-status-badge ${didPass ? "pass" : "fail"}`}
+                  >
                     {statusLabel}
                   </span>
                   <svg
@@ -167,14 +114,18 @@ export function AgentPage({ agent }: { agent: Agent }) {
                     <div className="check-detail-label">Check explanation</div>
                     <div
                       className="check-explanation-markdown prose prose-invert prose-sm max-w-none"
-                      dangerouslySetInnerHTML={{ __html: check.explanation_markdown }}
+                      dangerouslySetInnerHTML={{
+                        __html: check.explanation_markdown,
+                      }}
                     />
                   </div>
-                  <div className={`check-detail-panel ${didPass ? "result-pass" : "result-fail"}`}>
+                  <div
+                    className={`check-detail-panel ${didPass ? "result-pass" : "result-fail"}`}
+                  >
                     <div className="check-detail-label">
                       {didPass ? "Result" : "Failure message"}
                     </div>
-                    <p>{resultMessage(agent, check)}</p>
+                    <p>{check.message}</p>
                   </div>
                 </div>
               </div>

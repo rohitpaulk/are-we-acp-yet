@@ -13,7 +13,10 @@ test.each(registry.agentSlugs)("session/close succeeds (%s)", async (slug) => {
   const initResult = await initAndAuth(connection, agent);
 
   if (!initResult.agentCapabilities?.sessionCapabilities?.close) {
-    check.fail("supports-session-close");
+    check.fail(
+      "supports-session-close",
+      `${agent.name} did not advertise session close support during initialization.`,
+    );
     return;
   }
 
@@ -26,5 +29,8 @@ test.each(registry.agentSlugs)("session/close succeeds (%s)", async (slug) => {
     sessionId: session.sessionId,
   });
 
-  check.pass("supports-session-close");
+  check.pass(
+    "supports-session-close",
+    `${agent.name} advertised session close support and acknowledged session/close.`,
+  );
 });

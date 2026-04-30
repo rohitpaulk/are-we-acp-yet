@@ -24,13 +24,21 @@ export function writeResults(collectorRegistry: CheckCollectorRegistry): void {
         status = "fail";
       }
 
+      const message = collector.checkMessages.get(slug);
+      if (!message) {
+        throw new Error(`No result message recorded for check: ${slug}`);
+      }
+
       return {
         slug: meta.slug,
         position: meta.position,
         label: meta.label,
         description: meta.description,
-        explanation_markdown: marked.parse(meta.explanationMarkdown, { async: false }) as string,
+        explanation_markdown: marked.parse(meta.explanationMarkdown, {
+          async: false,
+        }) as string,
         status,
+        message,
       };
     });
 

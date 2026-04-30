@@ -6,7 +6,8 @@ setDefaultTimeout(15_000);
 await import("../scripts/generate-check-slugs");
 
 const { AgentRegistry } = await import("../lib/agent-registry");
-const { CheckCollectorRegistry } = await import("../lib/check-collector-registry");
+const { CheckCollectorRegistry } =
+  await import("../lib/check-collector-registry");
 const { writeResults } = await import("../lib/results-writer");
 
 export const registry = new AgentRegistry();
@@ -37,7 +38,11 @@ afterAll(() => {
       } else {
         status = chalk.gray("SKIP");
       }
-      console.log(`  ${collector.agent.slug}: ${status}`);
+
+      const message = collector.checkMessages.get(check);
+      console.log(
+        `  ${collector.agent.slug}: ${status}${message ? ` — ${message}` : ""}`,
+      );
     }
   }
 

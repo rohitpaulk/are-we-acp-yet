@@ -18,20 +18,24 @@ test.each(registry.agentSlugs)("terminal commands (%s)", async (slug) => {
   const updates: acp.SessionUpdate[] = [];
 
   using proc = new AgentProcess(agent);
+
   const connection = proc.connect({
     async sessionUpdate(params) {
       updates.push(params.update);
     },
     async requestPermission(params) {
       const allowedOption = params.options.find(
-        (option) => option.kind === "allow_once" || option.kind === "allow_always",
+        (option) =>
+          option.kind === "allow_once" || option.kind === "allow_always",
       );
 
       if (!allowedOption) {
         return { outcome: { outcome: "cancelled" } };
       }
 
-      return { outcome: { outcome: "selected", optionId: allowedOption.optionId } };
+      return {
+        outcome: { outcome: "selected", optionId: allowedOption.optionId },
+      };
     },
     createTerminal: terminalClient.createTerminal,
     terminalOutput: terminalClient.terminalOutput,
@@ -61,29 +65,56 @@ test.each(registry.agentSlugs)("terminal commands (%s)", async (slug) => {
     });
 
     if (terminalClient.createdTerminals.length > 0) {
-      check.pass("executes-terminal-commands");
+      check.pass(
+        "executes-terminal-commands",
+        `${agent.name} created ${terminalClient.createdTerminals.length} terminal command(s) using the ACP terminal capability.`,
+      );
     } else {
-      check.fail("executes-terminal-commands");
+      check.fail(
+        "executes-terminal-commands",
+        `${agent.name} did not create a terminal command using the ACP terminal capability.`,
+      );
     }
 
     if (terminalClient.outputRequests.length > 0) {
-      check.pass("streams-terminal-command-output");
+      check.pass(
+        "streams-terminal-command-output",
+        `${agent.name} requested terminal output ${terminalClient.outputRequests.length} time(s) while the command ran.`,
+      );
     } else {
-      check.fail("streams-terminal-command-output");
+      check.fail(
+        "streams-terminal-command-output",
+        `${agent.name} did not request terminal output while the command ran.`,
+      );
     }
 
     const terminalIdsInUpdates = terminalIdsEmbeddedInToolCalls(updates);
     if (terminalIdsInUpdates.length > 0) {
-      check.pass("displays-terminal-command-when-in-progress");
+      check.pass(
+        "displays-terminal-command-when-in-progress",
+        `${agent.name} embedded terminal content in ${terminalIdsInUpdates.length} in-progress tool call update(s).`,
+      );
     } else {
-      check.fail("displays-terminal-command-when-in-progress");
+      check.fail(
+        "displays-terminal-command-when-in-progress",
+        `${agent.name} did not embed the active terminal in an in-progress tool call update.`,
+      );
     }
 
-    const displayedOutput = await terminalOutputWasDisplayed(updates, terminalClient);
+    const displayedOutput = await terminalOutputWasDisplayed(
+      updates,
+      terminalClient,
+    );
     if (displayedOutput) {
-      check.pass("displays-terminal-command-output");
+      check.pass(
+        "displays-terminal-command-output",
+        `${agent.name} left the terminal output containing ${JSON.stringify(COMMAND_OUTPUT)} visible through terminal content.`,
+      );
     } else {
-      check.fail("displays-terminal-command-output");
+      check.fail(
+        "displays-terminal-command-output",
+        `${agent.name} did not leave the terminal output containing ${JSON.stringify(COMMAND_OUTPUT)} visible through terminal content.`,
+      );
     }
   } finally {
     await terminalClient.releaseAll();
@@ -119,7 +150,9 @@ class TestTerminalClient {
     return this.getTerminal(params.terminalId).waitForExit();
   };
 
-  killTerminal = async (params: acp.KillTerminalRequest): Promise<acp.KillTerminalResponse> => {
+  killTerminal = async (
+    params: acp.KillTerminalRequest,
+  ): Promise<acp.KillTerminalResponse> => {
     this.getTerminal(params.terminalId).kill();
     return {};
   };
@@ -129,13 +162,18 @@ class TestTerminalClient {
   ): Promise<acp.ReleaseTerminalResponse> => {
     const terminal = this.getTerminal(params.terminalId);
     await terminal.release();
-    this.releasedTerminalOutputs.set(params.terminalId, terminal.currentOutput().output);
+    this.releasedTerminalOutputs.set(
+      params.terminalId,
+      terminal.currentOutput().output,
+    );
     this.terminals.delete(params.terminalId);
     return {};
   };
 
   async releaseAll(): Promise<void> {
-    await Promise.all([...this.terminals.values()].map((terminal) => terminal.release()));
+    await Promise.all(
+      [...this.terminals.values()].map((terminal) => terminal.release()),
+    );
     this.terminals.clear();
   }
 
@@ -164,8 +202,12 @@ class TestTerminal {
       stdio: ["ignore", "pipe", "pipe"],
     });
 
-    this.childProcess.stdout?.on("data", (chunk: Buffer) => this.appendOutput(chunk));
-    this.childProcess.stderr?.on("data", (chunk: Buffer) => this.appendOutput(chunk));
+    this.childProcess.stdout?.on("data", (chunk: Buffer) =>
+      this.appendOutput(chunk),
+    );
+    this.childProcess.stderr?.on("data", (chunk: Buffer) =>
+      this.appendOutput(chunk),
+    );
 
     this.exited = new Promise((resolve) => {
       this.childProcess.on("error", (error) => {
@@ -210,7 +252,10 @@ class TestTerminal {
   private appendOutput(chunk: Buffer): void {
     this.output += chunk.toString();
 
-    if (this.outputByteLimit && Buffer.byteLength(this.output) > this.outputByteLimit) {
+    if (
+      this.outputByteLimit &&
+      Buffer.byteLength(this.output) > this.outputByteLimit
+    ) {
       this.truncated = true;
       while (Buffer.byteLength(this.output) > this.outputByteLimit) {
         this.output = this.output.slice(1);
@@ -233,11 +278,14 @@ function validCwd(cwd?: string | null): string | undefined {
   return cwd && existsSync(cwd) ? cwd : undefined;
 }
 
-function terminalIdsEmbeddedInToolCalls(updates: acp.SessionUpdate[]): string[] {
+function terminalIdsEmbeddedInToolCalls(
+  updates: acp.SessionUpdate[],
+): string[] {
   return updates.flatMap((update) =>
     toolCallContent(update)
       .filter(
-        (content): content is acp.Terminal & { type: "terminal" } => content.type === "terminal",
+        (content): content is acp.Terminal & { type: "terminal" } =>
+          content.type === "terminal",
       )
       .map((content) => content.terminalId),
   );
@@ -248,12 +296,18 @@ async function terminalOutputWasDisplayed(
   terminalClient: TestTerminalClient,
 ): Promise<boolean> {
   const terminalIds = terminalIdsEmbeddedInToolCalls(updates);
-  await waitUntilTerminalOutputIncludes(terminalClient, terminalIds, COMMAND_OUTPUT, 1_000);
+  await waitUntilTerminalOutputIncludes(
+    terminalClient,
+    terminalIds,
+    COMMAND_OUTPUT,
+    1_000,
+  );
 
   return terminalIds.some((terminalId) => {
     const terminal = terminalClient.terminals.get(terminalId);
     const output =
-      terminal?.currentOutput().output ?? terminalClient.releasedTerminalOutputs.get(terminalId);
+      terminal?.currentOutput().output ??
+      terminalClient.releasedTerminalOutputs.get(terminalId);
     return output?.includes(COMMAND_OUTPUT) ?? false;
   });
 }
@@ -284,7 +338,10 @@ async function waitUntilTerminalOutputIncludes(
 }
 
 function toolCallContent(update: acp.SessionUpdate): acp.ToolCallContent[] {
-  if (update.sessionUpdate !== "tool_call" && update.sessionUpdate !== "tool_call_update") {
+  if (
+    update.sessionUpdate !== "tool_call" &&
+    update.sessionUpdate !== "tool_call_update"
+  ) {
     return [];
   }
 
