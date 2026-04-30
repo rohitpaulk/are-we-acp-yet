@@ -3,9 +3,9 @@ import { useLocation } from "react-router";
 
 import { CheckIcon } from "../components/CheckIcon";
 import { XIcon } from "../components/XIcon";
-import mockData from "../data/mock-results.json";
+import resultsData from "../../data/results.json";
 
-export type Agent = (typeof mockData.agents)[number];
+export type Agent = (typeof resultsData.agents)[number];
 type Check = Agent["checks"][number];
 
 const failureMessages: Record<string, Record<string, string>> = {

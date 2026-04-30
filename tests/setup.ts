@@ -2,6 +2,7 @@ import { setDefaultTimeout, afterAll } from "bun:test";
 import chalk from "chalk";
 import { AgentRegistry } from "../lib/agent-registry";
 import { CheckCollectorRegistry } from "../lib/check-collector-registry";
+import { writeResults } from "../lib/results-writer";
 
 setDefaultTimeout(15_000);
 
@@ -17,7 +18,6 @@ afterAll(() => {
   const first = collectors[0];
   if (!first) return;
   const allChecks = [...first.checkSlugs];
-  const agentSlugs = collectors.map((c) => c.agent.slug);
 
   console.log("\n" + chalk.bold("Check Results"));
   console.log("=".repeat(60));
@@ -39,5 +39,7 @@ afterAll(() => {
   }
 
   console.log("\n" + "=".repeat(60));
+
+  writeResults(checkCollectorRegistry);
 });
 

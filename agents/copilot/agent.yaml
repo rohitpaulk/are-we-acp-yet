@@ -1,3 +1,4 @@
-name: copilot
+name: Copilot
+company: GitHub
 env_vars:
   - COPILOT_GITHUB_TOKEN

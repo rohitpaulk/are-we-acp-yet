@@ -1,6 +1,6 @@
 import { AgentPage } from "../pages/agent";
 import { NotFoundPage } from "../pages/not-found";
-import mockData from "../data/mock-results.json";
+import resultsData from "../../data/results.json";
 
 type AgentRouteProps = {
   params: {
@@ -9,7 +9,7 @@ type AgentRouteProps = {
 };
 
 function findAgent(slug = "") {
-  return mockData.agents.find((candidate) => candidate.slug === slug);
+  return resultsData.agents.find((candidate) => candidate.slug === slug);
 }
 
 export function meta({ params }: AgentRouteProps) {

@@ -1,7 +1,7 @@
 import type { Config } from "@react-router/dev/config";
+import resultsData from "./data/results.json";
 
-// TODO: dynamically pull from agent results JSON
-const agentSlugs = ["codex", "copilot"];
+const agentSlugs = resultsData.agents.map((a: { slug: string }) => a.slug);
 
 export default {
   appDirectory: "src",

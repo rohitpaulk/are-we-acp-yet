@@ -1,5 +1,5 @@
 import AgentCard from "../components/AgentCard";
-import mockData from "../data/mock-results.json";
+import resultsData from "../../data/results.json";
 
 function formatHumanDate(value: string) {
   const [year, month, day] = value.split("-").map(Number);
@@ -12,12 +12,12 @@ function formatHumanDate(value: string) {
 }
 
 export function HomePage() {
-  const agents = [...mockData.agents].sort((a, b) => {
+  const agents = [...resultsData.agents].sort((a, b) => {
     const pctA = a.checks.filter((check) => check.status === "pass").length / a.checks.length;
     const pctB = b.checks.filter((check) => check.status === "pass").length / b.checks.length;
     return pctB - pctA;
   });
-  const lastUpdated = formatHumanDate(mockData.lastUpdated);
+  const lastUpdated = formatHumanDate(resultsData.lastUpdated);
 
   return (
     <>

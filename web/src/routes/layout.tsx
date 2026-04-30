@@ -5,10 +5,10 @@ import { GitHubIcon } from "../components/GitHubIcon";
 import { HelpIcon } from "../components/HelpIcon";
 import QuestionHeadline from "../components/QuestionHeadline";
 import StatusPill from "../components/StatusPill";
-import mockData from "../data/mock-results.json";
+import resultsData from "../../data/results.json";
 
 function findAgent(slug = "") {
-  return mockData.agents.find((candidate) => candidate.slug === slug);
+  return resultsData.agents.find((candidate) => candidate.slug === slug);
 }
 
 function TopRightLinks() {

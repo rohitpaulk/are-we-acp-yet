@@ -1,3 +1,4 @@
-name: codex
+name: Codex
+company: OpenAI
 env_vars:
   - OPENAI_API_KEY

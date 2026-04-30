@@ -1,5 +1,6 @@
 ---
-title: Supports session/resume
+label: Session Resume
+description: Can resume a previously started session and restore its state without losing context
 ---
 
 This check verifies that the agent supports the `session/resume` capability.

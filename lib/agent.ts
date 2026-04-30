@@ -9,18 +9,21 @@ const AGENTS_DIR = resolve(PROJECT_ROOT, "agents");
 
 type AgentYAML = {
   name: string;
+  company: string;
   env_vars: string[];
 };
 
 export class Agent {
   readonly slug: string;
   readonly name: string;
+  readonly company: string;
   readonly dockerContext: string;
   readonly envVars: string[];
 
-  constructor(opts: { slug: string; name: string; dockerContext: string; envVars: string[] }) {
+  constructor(opts: { slug: string; name: string; company: string; dockerContext: string; envVars: string[] }) {
     this.slug = opts.slug;
     this.name = opts.name;
+    this.company = opts.company;
     this.dockerContext = opts.dockerContext;
     this.envVars = opts.envVars;
   }
@@ -32,6 +35,7 @@ export class Agent {
     return new Agent({
       slug: dir,
       name: config.name,
+      company: config.company,
       dockerContext: `agents/${dir}`,
       envVars: config.env_vars,
     });

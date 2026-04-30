@@ -23,17 +23,7 @@ interface AgentCardProps {
 }
 
 function logoPath(slug: string) {
-  const logoName = {
-    "claude-code": "claude",
-    codex: "openai",
-    copilot: "copilot",
-  }[slug];
-
-  if (!logoName) {
-    throw new Error(`No logo mapping found for slug: ${slug}`);
-  }
-
-  return `/logos/${logoName}.svg`;
+  return `/logos/${slug}.svg`;
 }
 
 function PopoverContent({ check, agentSlug }: { check: Check; agentSlug: string }) {
