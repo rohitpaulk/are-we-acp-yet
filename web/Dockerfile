@@ -21,6 +21,7 @@ ENV NODE_ENV=production
 COPY --from=deps /app/node_modules ./node_modules
 COPY --from=build /app/dist ./dist
 COPY --from=build /app/package.json ./package.json
+COPY --from=build /app/data ./data
 COPY --from=build /app/src ./src
 COPY --from=build /app/react-router.config.ts ./react-router.config.ts
 COPY --from=build /app/vite.config.ts ./vite.config.ts
