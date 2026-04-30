@@ -1,5 +1,5 @@
 ---
-label: Session modes
+label: Listing session modes
 description: Advertises supported modes (e.g., Ask/Plan/Build) through session config options
 ---
 

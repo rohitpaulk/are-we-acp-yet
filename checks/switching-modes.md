@@ -1,6 +1,6 @@
 ---
-label: Mode switching
-description: Accepts changing the current mode through the session configuration option API
+label: Switching modes
+description: Allows switching modes (e.g. Plan/Ask/Build) through session config options
 ---
 
 This check verifies that the agent can switch modes using ACP Session Config Options.
