@@ -127,7 +127,7 @@ export default function AgentCard({ slug, name, company, checks }: AgentCardProp
       </div>
       <div className="relative z-10 border-t border-white/5 mt-3 pt-2.5 flex items-center justify-between">
         <div>
-          <div className="text-xs text-text-muted">SUCCESS RATE</div>
+          <div className="text-xs text-text-muted">PASS RATE</div>
           <div className="font-semibold text-lg">{pct}%</div>
         </div>
         <Button href={`/${slug}`}>View details &rarr;</Button>

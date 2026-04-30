@@ -15,7 +15,7 @@ function TopRightLinks() {
   return (
     <div className="flex items-center justify-end gap-2">
       <Button href="https://agentclientprotocol.com/" shouldOpenInNewTab icon={<HelpIcon />}>
-        What's this?
+        What's ACP?
       </Button>
       <Button
         href="https://github.com/rohitpaulk/acp-verifier"

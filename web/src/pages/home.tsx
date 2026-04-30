@@ -32,7 +32,7 @@ export function HomePage() {
         ))}
       </div>
 
-      <div className="mt-8 flex items-center justify-between border-t border-border pt-5 pb-10 text-xs text-text-muted">
+      <div className="mt-8 flex items-center justify-between border-t border-white/5 pt-5 pb-10 text-xs text-text-muted">
         <div className="flex items-center gap-4">
           <span>
             Last updated: <span className="text-text-dim">{lastUpdated}</span>
@@ -43,7 +43,7 @@ export function HomePage() {
           target="_blank"
           className="text-text-muted no-underline transition-colors hover:text-text"
         >
-          How are these checks determined? &rarr;
+          View on GitHub &rarr;
         </a>
       </div>
     </>
