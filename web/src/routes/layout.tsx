@@ -16,7 +16,6 @@ function HomeHeaderDetails() {
     <p className="mt-8 text-base leading-relaxed text-text-muted">
       <span className="font-semibold text-green">Green</span> checks pass,{" "}
       <span className="font-semibold text-red">red</span> checks fail. <br />
-      Hover to see details.
     </p>
   );
 }
@@ -27,7 +26,11 @@ function TopRightLinks() {
       <Button href="https://agentclientprotocol.com/" shouldOpenInNewTab icon={<HelpIcon />}>
         What's this?
       </Button>
-      <Button href="https://github.com/rohitpaulk/acp-verifier" shouldOpenInNewTab icon={<GitHubIcon />}>
+      <Button
+        href="https://github.com/rohitpaulk/acp-verifier"
+        shouldOpenInNewTab
+        icon={<GitHubIcon />}
+      >
         View on GitHub &rarr;
       </Button>
     </div>
