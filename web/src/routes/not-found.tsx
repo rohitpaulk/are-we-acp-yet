@@ -1,4 +1,4 @@
-import { NotFoundPage } from "../pages";
+import { NotFoundPage } from "../pages/not-found";
 
 type NotFoundRouteProps = {
   params: {

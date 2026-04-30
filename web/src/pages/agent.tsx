@@ -1,10 +1,9 @@
 import { useEffect } from "react";
-import { Link, useLocation } from "react-router";
+import { useLocation } from "react-router";
 
-import AgentCard from "./components/AgentCard";
-import { CheckIcon } from "./components/CheckIcon";
-import { XIcon } from "./components/XIcon";
-import mockData from "./data/mock-results.json";
+import { CheckIcon } from "../components/CheckIcon";
+import { XIcon } from "../components/XIcon";
+import mockData from "../data/mock-results.json";
 
 export type Agent = (typeof mockData.agents)[number];
 type Check = Agent["checks"][number];
@@ -59,16 +58,6 @@ const failureMessages: Record<string, Record<string, string>> = {
   },
 };
 
-function formatHumanDate(value: string) {
-  const [year, month, day] = value.split("-").map(Number);
-  const date = new Date(year, month - 1, day);
-  const suffix = day >= 11 && day <= 13 ? "th" : (["th", "st", "nd", "rd"][day % 10] ?? "th");
-
-  return `${day}${suffix} ${date.toLocaleString("en", {
-    month: "long",
-  })} ${year}`;
-}
-
 function resultMessage(agent: Agent, check: Check) {
   if (check.status === "pass") {
     return `${agent.name} passed this check in the latest verifier run.`;
@@ -77,45 +66,6 @@ function resultMessage(agent: Agent, check: Check) {
   return (
     failureMessages[agent.slug]?.[check.slug] ??
     `${agent.name} failed this check in the latest verifier run.`
-  );
-}
-
-export function HomePage() {
-  const agents = [...mockData.agents].sort((a, b) => {
-    const pctA = a.checks.filter((check) => check.status === "pass").length / a.checks.length;
-    const pctB = b.checks.filter((check) => check.status === "pass").length / b.checks.length;
-    return pctB - pctA;
-  });
-  const lastUpdated = formatHumanDate(mockData.lastUpdated);
-
-  return (
-    <>
-      <p className="mb-8 text-base leading-relaxed text-text-muted text-center">
-        <span className="font-semibold text-green">Green</span> checks pass.{" "}
-        <span className="font-semibold text-red">Red</span> checks fail. <br />
-      </p>
-
-      <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
-        {agents.map((agent) => (
-          <AgentCard key={agent.slug} {...agent} />
-        ))}
-      </div>
-
-      <div className="mt-8 flex items-center justify-between border-t border-border pt-5 pb-10 text-xs text-text-muted">
-        <div className="flex items-center gap-4">
-          <span>
-            Last updated: <span className="text-text-dim">{lastUpdated}</span>
-          </span>
-        </div>
-        <a
-          href="https://github.com/rohitpaulk/acp-verifier"
-          target="_blank"
-          className="text-text-muted no-underline transition-colors hover:text-text"
-        >
-          How are these checks determined? &rarr;
-        </a>
-      </div>
-    </>
   );
 }
 
@@ -232,29 +182,5 @@ export function AgentPage({ agent }: { agent: Agent }) {
         })}
       </div>
     </main>
-  );
-}
-
-export function NotFoundPage({ slug }: { slug: string }) {
-  return (
-    <div className="mx-auto max-w-5xl px-7">
-      <main className="pt-24 pb-14 text-center">
-        <Link to="/">
-          <img src="/logos/acp.svg" alt="ACP" className="mb-5 inline-block h-10 opacity-70" />
-        </Link>
-        <h1 className="text-5xl leading-none font-bold tracking-tighter text-text">
-          Agent not found
-        </h1>
-        <p className="mt-6 text-text-muted">
-          No ACP verifier results exist for <span className="text-text-dim">{slug}</span>.
-        </p>
-        <Link
-          to="/"
-          className="mt-8 inline-flex border border-border bg-surface px-3 py-1.5 text-xs font-semibold text-text-muted no-underline transition-colors hover:border-border-hover hover:text-text"
-        >
-          &larr; All agents
-        </Link>
-      </main>
-    </div>
   );
 }

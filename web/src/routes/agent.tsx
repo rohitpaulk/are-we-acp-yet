@@ -1,4 +1,5 @@
-import { AgentPage, NotFoundPage } from "../pages";
+import { AgentPage } from "../pages/agent";
+import { NotFoundPage } from "../pages/not-found";
 import mockData from "../data/mock-results.json";
 
 type AgentRouteProps = {
