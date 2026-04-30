@@ -125,7 +125,7 @@ export default function AgentCard({ slug, name, company, checks }: AgentCardProp
           <CheckCell key={check.slug} check={check} agentSlug={slug} handle={popoverHandle} />
         ))}
       </div>
-      <div className="relative z-10 border-t border-white/5 mt-3 pt-3 flex items-center justify-between">
+      <div className="relative z-10 border-t border-white/5 mt-3 pt-2.5 flex items-center justify-between">
         <div>
           <div className="text-xs text-text-muted">SUCCESS RATE</div>
           <div className="font-semibold text-lg">{pct}%</div>
