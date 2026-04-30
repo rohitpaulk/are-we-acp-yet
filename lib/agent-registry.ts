@@ -9,7 +9,18 @@ export class AgentRegistry {
   readonly agents: Agent[];
 
   constructor() {
-    this.agents = this.discover();
+    const all = this.discover();
+    const filter = process.env.AGENTS?.split(",").map((s) => s.trim()).filter(Boolean);
+
+    if (filter?.length) {
+      const unknown = filter.filter((slug) => !all.some((a) => a.slug === slug));
+      if (unknown.length) {
+        throw new Error(`Unknown agent(s) in AGENTS env var: ${unknown.join(", ")}`);
+      }
+      this.agents = all.filter((a) => filter.includes(a.slug));
+    } else {
+      this.agents = all;
+    }
   }
 
   get agentSlugs(): string[] {

@@ -2,9 +2,9 @@
   "lastUpdated": "2026-04-30",
   "agents": [
     {
-      "slug": "copilot",
-      "name": "Copilot",
-      "company": "GitHub",
+      "slug": "opencode",
+      "name": "OpenCode",
+      "company": "Anomaly",
       "checks": [
         {
           "slug": "boot-time-500ms",
@@ -25,14 +25,14 @@
           "label": "Loads skills",
           "description": "Loads skills from `.agents/skills` in the working directory as slash commands",
           "explanation_markdown": "<p>This check verifies that when a session is created with a working directory containing <code>.agents/skills</code>, the agent advertises those skills through <a href=\"https://agentclientprotocol.com/protocol/slash-commands\">Slash Commands</a>.</p>\n<h3>Why is this important?</h3>\n<p>Clients use slash command updates to show users which project-specific skills are available in the current workspace.</p>\n<p>Agents should discover skills from the session working directory and send an <code>available_commands_update</code> notification that includes each user-invocable skill.</p>\n",
-          "status": "fail"
+          "status": "pass"
         },
         {
           "slug": "loads-skills-500ms",
           "label": "Loads skills < 500ms",
           "description": "Loads `.agents/skills` slash commands within 500 milliseconds of session creation",
           "explanation_markdown": "<p>This check verifies that skills from the session working directory are advertised as slash commands within 500ms of calling <code>session/new</code>.</p>\n<h3>Why is this important?</h3>\n<p>Project skills affect the commands a client presents immediately after a session starts. Slow skill discovery can make command menus feel incomplete or laggy.</p>\n",
-          "status": "fail"
+          "status": "pass"
         },
         {
           "slug": "supports-session-close",
@@ -40,69 +40,6 @@
           "description": "Properly handles session termination by cleaning up resources and acknowledging the close request",
           "explanation_markdown": "<p>This check verifies that the agent supports the <code>session/close</code> capability.</p>\n<h3>Why is this important?</h3>\n<p><code>session/close</code> is required to terminate a running session and free up resources.</p>\n<!-- TODO: See if this is used to remove threads from the sidebar -->",
           "status": "fail"
-        },
-        {
-          "slug": "supports-session-resume",
-          "label": "Session resume",
-          "description": "Can resume a previously started session and restore its state without losing context",
-          "explanation_markdown": "<p>This check verifies that the agent supports the <code>session/resume</code> capability.</p>\n<h3>Why is this important?</h3>\n<p><code>session/resume</code> allows clients to reconnect to a previously created session without losing conversation history.</p>\n",
-          "status": "fail"
-        },
-        {
-          "slug": "switch-mode",
-          "label": "Switching modes",
-          "description": "Allows switching modes (e.g. Plan/Ask/Build) through session config options",
-          "explanation_markdown": "<p>This check verifies that the agent can switch modes using ACP Session Config Options.</p>\n<h3>Why is this important?</h3>\n<p>Clients need reliable mode switching to implement shortcuts like <code>Shift+Tab</code>. If an agent exposes a mode config option with multiple values, it should accept another valid value via <code>session/set_config_option</code> and keep the session usable afterward.</p>\n",
-          "status": "pass"
-        },
-        {
-          "slug": "switch-mode-500ms",
-          "label": "Switch mode < 500ms",
-          "description": "Changes the mode session configuration option within 500 milliseconds",
-          "explanation_markdown": "<p>This check verifies that the agent responds to a mode config option change within 500ms.</p>\n<h3>Why is this important?</h3>\n<p>Mode switching is often exposed through keyboard shortcuts like <code>Shift+Tab</code>, so changing the mode config option should feel instantaneous. Slow config option updates make the client feel laggy and can interrupt the user&#39;s flow.</p>\n",
-          "status": "pass"
-        }
-      ]
-    },
-    {
-      "slug": "codex",
-      "name": "Codex",
-      "company": "OpenAI",
-      "checks": [
-        {
-          "slug": "boot-time-500ms",
-          "label": "Boot < 500ms",
-          "description": "Server cold-starts and responds to the first health-check request within 500 milliseconds",
-          "explanation_markdown": "<p>This check verifies that the agent boots and responds to the <code>session/new</code> request within 500ms.</p>\n",
-          "status": "pass"
-        },
-        {
-          "slug": "listing-modes",
-          "label": "Listing session modes",
-          "description": "Advertises supported modes (e.g., Ask/Plan/Build) through session config options",
-          "explanation_markdown": "<p>This check verifies that the agent supports modes through <a href=\"https://agentclientprotocol.com/protocol/session-config-options\">Session Config Options</a>.</p>\n<h3>Why is this important?</h3>\n<p>Clients need this information to render the current mode (for example Ask/Plan/Build) in the UI.</p>\n<p>Agents that support modes should expose a valid single-select session config option for modes, including the current value and the available values that clients can present to users.</p>\n",
-          "status": "pass"
-        },
-        {
-          "slug": "loads-skills",
-          "label": "Loads skills",
-          "description": "Loads skills from `.agents/skills` in the working directory as slash commands",
-          "explanation_markdown": "<p>This check verifies that when a session is created with a working directory containing <code>.agents/skills</code>, the agent advertises those skills through <a href=\"https://agentclientprotocol.com/protocol/slash-commands\">Slash Commands</a>.</p>\n<h3>Why is this important?</h3>\n<p>Clients use slash command updates to show users which project-specific skills are available in the current workspace.</p>\n<p>Agents should discover skills from the session working directory and send an <code>available_commands_update</code> notification that includes each user-invocable skill.</p>\n",
-          "status": "fail"
-        },
-        {
-          "slug": "loads-skills-500ms",
-          "label": "Loads skills < 500ms",
-          "description": "Loads `.agents/skills` slash commands within 500 milliseconds of session creation",
-          "explanation_markdown": "<p>This check verifies that skills from the session working directory are advertised as slash commands within 500ms of calling <code>session/new</code>.</p>\n<h3>Why is this important?</h3>\n<p>Project skills affect the commands a client presents immediately after a session starts. Slow skill discovery can make command menus feel incomplete or laggy.</p>\n",
-          "status": "fail"
-        },
-        {
-          "slug": "supports-session-close",
-          "label": "Session close",
-          "description": "Properly handles session termination by cleaning up resources and acknowledging the close request",
-          "explanation_markdown": "<p>This check verifies that the agent supports the <code>session/close</code> capability.</p>\n<h3>Why is this important?</h3>\n<p><code>session/close</code> is required to terminate a running session and free up resources.</p>\n<!-- TODO: See if this is used to remove threads from the sidebar -->",
-          "status": "pass"
         },
         {
           "slug": "supports-session-resume",
