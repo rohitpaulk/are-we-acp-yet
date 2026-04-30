@@ -1,6 +1,10 @@
 import { Tooltip } from "@base-ui/react/tooltip";
+import { Typewriter } from "motion-plus/react";
+import { useLocation } from "react-router";
 
 export default function StatusPill() {
+  const location = useLocation();
+
   return (
     <Tooltip.Provider delay={0} closeDelay={120} timeout={400}>
       <Tooltip.Root>
@@ -14,7 +18,7 @@ export default function StatusPill() {
             }
           >
             <span className="h-1.5 w-1.5 bg-red" />
-            <span>Status: Not Ready</span>
+            <span>Status: <Typewriter key={location.pathname} speed="slow" cursorBlinkRepeat={1}>Not Ready</Typewriter></span>
           </Tooltip.Trigger>
           <Tooltip.Portal>
             <Tooltip.Positioner
