@@ -1,0 +1,4 @@
+name: OpenCode
+company: Anomaly
+env_vars:
+  - OPENCODE_API_KEY
