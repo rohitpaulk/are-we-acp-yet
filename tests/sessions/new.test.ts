@@ -32,4 +32,61 @@ test.each(registry.agentSlugs)("session/new (%s)", async (slug) => {
   } else {
     check.fail("listing-modes");
   }
+
+  if (modeOptions.length != 1) {
+    throw new Error("Expected only one mode option");
+  }
+
+  const modeOption = modeOptions[0]!;
+
+  if (modeOption.type !== "select" || !modeOption.options) {
+    throw new Error("Expected mode option to be a select option with options");
+  }
+
+  const currentModeValue = modeOption.currentValue as string;
+  const allModeValues = (modeOption.options as acp.SessionConfigSelectOption[]).map((v) => v.value);
+  const modeValueToChangeTo = allModeValues.find((v) => v !== currentModeValue);
+
+  if (!modeValueToChangeTo) {
+    throw new Error("Expected to find a different mode value to change to");
+  }
+
+  const switchModeStart = performance.now();
+
+  const setModeResult = await proc.connection.setSessionConfigOption({
+    sessionId: session.sessionId,
+    configId: modeOption.id,
+    value: allModeValues.find((v) => v !== currentModeValue)!,
+  });
+
+  const switchModeElapsed = performance.now() - switchModeStart;
+
+  const newConfigOptions = setModeResult.configOptions;
+  const newModeOptions = newConfigOptions!.filter((option) => option.category === "mode");
+
+  if (newModeOptions.length != 1) {
+    throw new Error("Expected only one mode option after setting new mode");
+  }
+
+  const newModeOption = newModeOptions[0]!;
+
+  if (newModeOption.type !== "select" || !newModeOption.options) {
+    throw new Error(
+      "Expected mode option to be a select option with options after setting new mode",
+    );
+  }
+
+  const newCurrentModeValue = newModeOption.currentValue as string;
+
+  if (newCurrentModeValue !== modeValueToChangeTo) {
+    throw new Error("Expected current mode value to change after setting new mode");
+  }
+
+  check.pass("switch-mode");
+
+  if (switchModeElapsed <= 500) {
+    check.pass("switch-mode-500ms");
+  } else {
+    check.fail("switch-mode-500ms");
+  }
 });
