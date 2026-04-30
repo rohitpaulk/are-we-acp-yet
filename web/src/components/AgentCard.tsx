@@ -108,16 +108,21 @@ export default function AgentCard({ slug, name, company, checks }: AgentCardProp
     <CursorGlowCard className="group relative p-6 pb-5" glowImageSrc={logo}>
       <Link to={`/${slug}`} aria-label={`View ${name} details`} className="absolute inset-0 z-0" />
       <div className="relative z-10 flex items-center justify-between mb-5 pointer-events-none">
-        <div>
-          <h2 className="text-xl font-bold tracking-tight leading-tight">{name}</h2>
-          <div className="text-xs text-text-muted mt-0.5">by {company}</div>
+        <div className="flex items-center gap-3">
+          <div className="w-8 h-8 flex items-center justify-center shrink-0">
+            <img
+              src={logo}
+              alt={name}
+              className="w-8 h-8 grayscale opacity-50 transition-[filter,opacity] duration-200 group-hover:grayscale-0 group-hover:opacity-100"
+            />
+          </div>
+          <div>
+            <h2 className="text-xl font-bold tracking-tight leading-tight">{name}</h2>
+            <div className="text-xs text-text-muted mt-0.5">by {company}</div>
+          </div>
         </div>
-        <div className="w-8 h-8 flex items-center justify-center shrink-0">
-          <img
-            src={logo}
-            alt={name}
-            className="w-8 h-8 grayscale opacity-50 transition-[filter,opacity] duration-200 group-hover:grayscale-0 group-hover:opacity-100"
-          />
+        <div className="border border-white/5 px-1 py-0.5">
+          <div className="text-xs text-text-muted">v1.2.0</div>
         </div>
       </div>
       <div className="relative z-10 check-grid">
