@@ -14,7 +14,7 @@
           "description": "Server cold-starts and responds to the first health-check request within 500 milliseconds",
           "explanation_markdown": "<p>This check verifies that the agent boots and responds to the <code>session/new</code> request within 500ms.</p>\n",
           "status": "fail",
-          "message": "Copilot did not boot and respond to initialize within the 500ms target."
+          "message": "Copilot booted and responded to initialize in 3965ms, exceeding the 500ms target."
         },
         {
           "slug": "listing-modes",
@@ -23,7 +23,7 @@
           "description": "Advertises supported modes (e.g., Ask/Plan/Build) through session config options",
           "explanation_markdown": "<p>This check verifies that the agent supports modes through <a href=\"https://agentclientprotocol.com/protocol/session-config-options\">Session Config Options</a>.</p>\n<h3>Why is this important?</h3>\n<p>Clients need this information to render the current mode (for example Ask/Plan/Build) in the UI.</p>\n<p>Agents that support modes should expose a valid single-select session config option for modes, including the current value and the available values that clients can present to users.</p>\n",
           "status": "pass",
-          "message": "Copilot advertised session mode options."
+          "message": "Copilot advertised 1 mode option(s)."
         },
         {
           "slug": "switch-mode",
@@ -32,7 +32,7 @@
           "description": "Allows switching modes (e.g. Plan/Ask/Build) through session config options",
           "explanation_markdown": "<p>This check verifies that the agent can switch modes using ACP Session Config Options.</p>\n<h3>Why is this important?</h3>\n<p>Clients need reliable mode switching to implement shortcuts like <code>Shift+Tab</code>. If an agent exposes a mode config option with multiple values, it should accept another valid value via <code>session/set_config_option</code> and keep the session usable afterward.</p>\n",
           "status": "pass",
-          "message": "Copilot accepted a session mode change and reported the updated mode."
+          "message": "Copilot switched mode from https://agentclientprotocol.com/protocol/session-modes#agent to https://agentclientprotocol.com/protocol/session-modes#plan."
         },
         {
           "slug": "switch-mode-500ms",
@@ -41,7 +41,7 @@
           "description": "Changes the mode session configuration option within 500 milliseconds",
           "explanation_markdown": "<p>This check verifies that the agent responds to a mode config option change within 500ms.</p>\n<h3>Why is this important?</h3>\n<p>Mode switching is often exposed through keyboard shortcuts like <code>Shift+Tab</code>, so changing the mode config option should feel instantaneous. Slow config option updates make the client feel laggy and can interrupt the user&#39;s flow.</p>\n",
           "status": "pass",
-          "message": "Copilot switched modes within the 500ms target."
+          "message": "Copilot switched mode from https://agentclientprotocol.com/protocol/session-modes#agent to https://agentclientprotocol.com/protocol/session-modes#plan in 3ms."
         },
         {
           "slug": "loads-skills",
@@ -113,7 +113,7 @@
           "description": "Leaves terminal output visible to the user through terminal content embedded in tool calls",
           "explanation_markdown": "<p>This check verifies that terminal output remains displayable by embedding the terminal in a tool call whose output contains the command result.</p>\n<h3>Why is this important?</h3>\n<p>Users need to see the command output that led to the agent&#39;s next steps, especially for test failures, build errors, and generated logs. Terminal content in tool calls lets clients display this output directly in the conversation.</p>\n",
           "status": "fail",
-          "message": "Copilot did not leave terminal output containing \"acp-verifier-terminal-output\" visible through terminal content."
+          "message": "Copilot did not leave the terminal output containing \"acp-verifier-terminal-output\" visible through terminal content."
         }
       ]
     },
@@ -130,7 +130,7 @@
           "description": "Server cold-starts and responds to the first health-check request within 500 milliseconds",
           "explanation_markdown": "<p>This check verifies that the agent boots and responds to the <code>session/new</code> request within 500ms.</p>\n",
           "status": "pass",
-          "message": "Codex booted and responded to initialize within the 500ms target."
+          "message": "Codex booted and responded to initialize in 157ms."
         },
         {
           "slug": "listing-modes",
@@ -139,7 +139,7 @@
           "description": "Advertises supported modes (e.g., Ask/Plan/Build) through session config options",
           "explanation_markdown": "<p>This check verifies that the agent supports modes through <a href=\"https://agentclientprotocol.com/protocol/session-config-options\">Session Config Options</a>.</p>\n<h3>Why is this important?</h3>\n<p>Clients need this information to render the current mode (for example Ask/Plan/Build) in the UI.</p>\n<p>Agents that support modes should expose a valid single-select session config option for modes, including the current value and the available values that clients can present to users.</p>\n",
           "status": "pass",
-          "message": "Codex advertised session mode options."
+          "message": "Codex advertised 1 mode option(s)."
         },
         {
           "slug": "switch-mode",
@@ -148,7 +148,7 @@
           "description": "Allows switching modes (e.g. Plan/Ask/Build) through session config options",
           "explanation_markdown": "<p>This check verifies that the agent can switch modes using ACP Session Config Options.</p>\n<h3>Why is this important?</h3>\n<p>Clients need reliable mode switching to implement shortcuts like <code>Shift+Tab</code>. If an agent exposes a mode config option with multiple values, it should accept another valid value via <code>session/set_config_option</code> and keep the session usable afterward.</p>\n",
           "status": "pass",
-          "message": "Codex accepted a session mode change and reported the updated mode."
+          "message": "Codex switched mode from read-only to auto."
         },
         {
           "slug": "switch-mode-500ms",
@@ -157,7 +157,7 @@
           "description": "Changes the mode session configuration option within 500 milliseconds",
           "explanation_markdown": "<p>This check verifies that the agent responds to a mode config option change within 500ms.</p>\n<h3>Why is this important?</h3>\n<p>Mode switching is often exposed through keyboard shortcuts like <code>Shift+Tab</code>, so changing the mode config option should feel instantaneous. Slow config option updates make the client feel laggy and can interrupt the user&#39;s flow.</p>\n",
           "status": "pass",
-          "message": "Codex switched modes within the 500ms target."
+          "message": "Codex switched mode from read-only to auto in 1ms."
         },
         {
           "slug": "loads-skills",
@@ -229,7 +229,7 @@
           "description": "Leaves terminal output visible to the user through terminal content embedded in tool calls",
           "explanation_markdown": "<p>This check verifies that terminal output remains displayable by embedding the terminal in a tool call whose output contains the command result.</p>\n<h3>Why is this important?</h3>\n<p>Users need to see the command output that led to the agent&#39;s next steps, especially for test failures, build errors, and generated logs. Terminal content in tool calls lets clients display this output directly in the conversation.</p>\n",
           "status": "fail",
-          "message": "Codex did not leave terminal output containing \"acp-verifier-terminal-output\" visible through terminal content."
+          "message": "Codex did not leave the terminal output containing \"acp-verifier-terminal-output\" visible through terminal content."
         }
       ]
     },
@@ -246,7 +246,7 @@
           "description": "Server cold-starts and responds to the first health-check request within 500 milliseconds",
           "explanation_markdown": "<p>This check verifies that the agent boots and responds to the <code>session/new</code> request within 500ms.</p>\n",
           "status": "fail",
-          "message": "OpenCode did not boot and respond to initialize within the 500ms target."
+          "message": "OpenCode booted and responded to initialize in 745ms, exceeding the 500ms target."
         },
         {
           "slug": "listing-modes",
@@ -255,7 +255,7 @@
           "description": "Advertises supported modes (e.g., Ask/Plan/Build) through session config options",
           "explanation_markdown": "<p>This check verifies that the agent supports modes through <a href=\"https://agentclientprotocol.com/protocol/session-config-options\">Session Config Options</a>.</p>\n<h3>Why is this important?</h3>\n<p>Clients need this information to render the current mode (for example Ask/Plan/Build) in the UI.</p>\n<p>Agents that support modes should expose a valid single-select session config option for modes, including the current value and the available values that clients can present to users.</p>\n",
           "status": "pass",
-          "message": "OpenCode advertised session mode options."
+          "message": "OpenCode advertised 1 mode option(s)."
         },
         {
           "slug": "switch-mode",
@@ -264,7 +264,7 @@
           "description": "Allows switching modes (e.g. Plan/Ask/Build) through session config options",
           "explanation_markdown": "<p>This check verifies that the agent can switch modes using ACP Session Config Options.</p>\n<h3>Why is this important?</h3>\n<p>Clients need reliable mode switching to implement shortcuts like <code>Shift+Tab</code>. If an agent exposes a mode config option with multiple values, it should accept another valid value via <code>session/set_config_option</code> and keep the session usable afterward.</p>\n",
           "status": "pass",
-          "message": "OpenCode accepted a session mode change and reported the updated mode."
+          "message": "OpenCode switched mode from build to plan."
         },
         {
           "slug": "switch-mode-500ms",
@@ -273,7 +273,7 @@
           "description": "Changes the mode session configuration option within 500 milliseconds",
           "explanation_markdown": "<p>This check verifies that the agent responds to a mode config option change within 500ms.</p>\n<h3>Why is this important?</h3>\n<p>Mode switching is often exposed through keyboard shortcuts like <code>Shift+Tab</code>, so changing the mode config option should feel instantaneous. Slow config option updates make the client feel laggy and can interrupt the user&#39;s flow.</p>\n",
           "status": "pass",
-          "message": "OpenCode switched modes within the 500ms target."
+          "message": "OpenCode switched mode from build to plan in 7ms."
         },
         {
           "slug": "loads-skills",
@@ -291,7 +291,7 @@
           "description": "Loads `.agents/skills` slash commands within 500 milliseconds of session creation",
           "explanation_markdown": "<p>This check verifies that skills from the session working directory are advertised as slash commands within 500ms of calling <code>session/new</code>.</p>\n<h3>Why is this important?</h3>\n<p>Project skills affect the commands a client presents immediately after a session starts. Slow skill discovery can make command menus feel incomplete or laggy.</p>\n",
           "status": "pass",
-          "message": "OpenCode advertised the acp-verifier-skill skill within the 500ms target."
+          "message": "OpenCode advertised the acp-verifier-skill skill in 157ms."
         },
         {
           "slug": "supports-session-close",
@@ -345,7 +345,7 @@
           "description": "Leaves terminal output visible to the user through terminal content embedded in tool calls",
           "explanation_markdown": "<p>This check verifies that terminal output remains displayable by embedding the terminal in a tool call whose output contains the command result.</p>\n<h3>Why is this important?</h3>\n<p>Users need to see the command output that led to the agent&#39;s next steps, especially for test failures, build errors, and generated logs. Terminal content in tool calls lets clients display this output directly in the conversation.</p>\n",
           "status": "fail",
-          "message": "OpenCode did not leave terminal output containing \"acp-verifier-terminal-output\" visible through terminal content."
+          "message": "OpenCode did not leave the terminal output containing \"acp-verifier-terminal-output\" visible through terminal content."
         }
       ]
     }
