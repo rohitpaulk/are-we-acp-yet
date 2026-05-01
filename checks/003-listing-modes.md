@@ -5,7 +5,7 @@ description: Advertises supported modes (e.g., Ask/Plan/Build) through session c
 
 This check verifies that the agent supports modes through [Session Config Options](https://agentclientprotocol.com/protocol/session-config-options).
 
-### Why is this important?
+**Why is this important?**
 
 Clients need this information to render the current mode (for example Ask/Plan/Build) in the UI.
 

@@ -5,7 +5,7 @@ description: Properly handles session termination by cleaning up resources and a
 
 This check verifies that the agent supports the `session/close` capability.
 
-### Why is this important?
+**Why is this important?**
 
 `session/close` is required to terminate a running session and free up resources.
 

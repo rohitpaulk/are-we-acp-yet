@@ -5,7 +5,7 @@ description: Loads skills from `.agents/skills` in the working directory as slas
 
 This check verifies that when a session is created with a working directory containing `.agents/skills`, the agent advertises those skills through [Slash Commands](https://agentclientprotocol.com/protocol/slash-commands).
 
-### Why is this important?
+**Why is this important?**
 
 Clients use slash command updates to show users which project-specific skills are available in the current workspace.
 
