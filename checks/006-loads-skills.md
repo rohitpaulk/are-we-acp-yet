@@ -1,6 +1,5 @@
 ---
 label: Loads skills
-description: Loads skills from `.agents/skills` in the working directory as slash commands
 ---
 
 This check verifies that when a session is created with a working directory containing `.agents/skills`, the agent advertises those skills through [Slash Commands](https://agentclientprotocol.com/protocol/slash-commands).

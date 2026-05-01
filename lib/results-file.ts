@@ -5,7 +5,6 @@ export type CheckResult = {
   slug: string;
   position: number;
   label: string;
-  description: string;
   explanation_markdown: string;
   status: "pass" | "fail";
   message: string;

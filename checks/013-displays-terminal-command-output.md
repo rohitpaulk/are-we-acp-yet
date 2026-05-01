@@ -1,6 +1,5 @@
 ---
 label: Displays terminal output
-description: Leaves terminal output visible to the user through terminal content embedded in tool calls
 ---
 
 This check verifies that terminal output remains displayable in ACP session updates. Agents can satisfy this with embedded client-managed terminal content, or with ACP `execute` tool call content that includes the command result.

@@ -11,7 +11,6 @@
           "slug": "boot-time-500ms",
           "position": 1,
           "label": "Boot < 500ms",
-          "description": "Server cold-starts and responds to the first health-check request within 500 milliseconds",
           "explanation_markdown": "This check verifies that the agent boots and responds to the [`initialize`](https://agentclientprotocol.com/protocol/initialization) request within 500ms.\n\n**Why is this important?**\n\n- This affects the load time of the first chat session.",
           "status": "fail",
           "message": "Copilot booted and responded to initialize in 1371ms, exceeding the 500ms target."
@@ -20,7 +19,6 @@
           "slug": "new-session-500ms",
           "position": 2,
           "label": "New session < 500ms",
-          "description": "Server cold-starts and handles a new session creation rqeuest within 500 milliseconds",
           "explanation_markdown": "This check verifies that the agent boots and responds to the `session/new` request within 500ms.",
           "status": "fail",
           "message": "Copilot took 5110ms to initialize and create a new session, exceeding the 500ms target."
@@ -29,7 +27,6 @@
           "slug": "listing-modes",
           "position": 3,
           "label": "Listing session modes",
-          "description": "Advertises supported modes (e.g., Ask/Plan/Build) through session config options",
           "explanation_markdown": "This check verifies that the agent supports modes through [Session Config Options](https://agentclientprotocol.com/protocol/session-config-options).\n\n**Why is this important?**\n\nClients need this information to render the current mode (for example Ask/Plan/Build) in the UI.\n\nAgents that support modes should expose a valid single-select session config option for modes, including the current value and the available values that clients can present to users.",
           "status": "pass",
           "message": "Copilot advertised 1 mode(s): Mode."
@@ -38,7 +35,6 @@
           "slug": "switch-mode",
           "position": 4,
           "label": "Switching modes",
-          "description": "Allows switching modes (e.g. Plan/Ask/Build) through session config options",
           "explanation_markdown": "This check verifies that the agent can switch modes using ACP Session Config Options.\n\n**Why is this important?**\n\nClients need reliable mode switching to implement shortcuts like `Shift+Tab`. If an agent exposes a mode config option with multiple values, it should accept another valid value via `session/set_config_option` and keep the session usable afterward.",
           "status": "pass",
           "message": "Copilot switched mode from https://agentclientprotocol.com/protocol/session-modes#agent to https://agentclientprotocol.com/protocol/session-modes#plan."
@@ -47,7 +43,6 @@
           "slug": "switch-mode-500ms",
           "position": 5,
           "label": "Switch mode < 500ms",
-          "description": "Changes the mode session configuration option within 500 milliseconds",
           "explanation_markdown": "This check verifies that the agent responds to a mode config option change within 500ms.\n\n**Why is this important?**\n\nMode switching is often exposed through keyboard shortcuts like `Shift+Tab`, so changing the mode config option should feel instantaneous. Slow config option updates make the client feel laggy and can interrupt the user's flow.",
           "status": "pass",
           "message": "Copilot switched mode from https://agentclientprotocol.com/protocol/session-modes#agent to https://agentclientprotocol.com/protocol/session-modes#plan in 7ms."
@@ -56,7 +51,6 @@
           "slug": "loads-skills",
           "position": 6,
           "label": "Loads skills",
-          "description": "Loads skills from `.agents/skills` in the working directory as slash commands",
           "explanation_markdown": "This check verifies that when a session is created with a working directory containing `.agents/skills`, the agent advertises those skills through [Slash Commands](https://agentclientprotocol.com/protocol/slash-commands).\n\n**Why is this important?**\n\nClients use slash command updates to show users which project-specific skills are available in the current workspace.\n\nAgents should discover skills from the session working directory and send an `available_commands_update` notification that includes each user-invocable skill.",
           "status": "fail",
           "message": "Copilot did not advertise the acp-verifier-skill skill as a slash command within 5000ms."
@@ -65,7 +59,6 @@
           "slug": "loads-skills-500ms",
           "position": 7,
           "label": "Loads skills < 500ms",
-          "description": "Loads `.agents/skills` slash commands within 500 milliseconds of session creation",
           "explanation_markdown": "This check verifies that skills from the session working directory are advertised as slash commands within 500ms of calling `session/new`.\n\n**Why is this important?**\n\nProject skills affect the commands a client presents immediately after a session starts. Slow skill discovery can make command menus feel incomplete or laggy.",
           "status": "fail",
           "message": "Copilot did not advertise the acp-verifier-skill skill within the 500ms target."
@@ -74,7 +67,6 @@
           "slug": "supports-session-close",
           "position": 8,
           "label": "Session close",
-          "description": "Properly handles session termination by cleaning up resources and acknowledging the close request",
           "explanation_markdown": "This check verifies that the agent supports the `session/close` capability.\n\n**Why is this important?**\n\n`session/close` is required to terminate a running session and free up resources.\n\n<!-- TODO: See if this is used to remove threads from the sidebar -->",
           "status": "fail",
           "message": "Copilot did not advertise session close support during initialization."
@@ -83,7 +75,6 @@
           "slug": "supports-session-resume",
           "position": 9,
           "label": "Session resume",
-          "description": "Can resume a previously started session and restore its state without losing context",
           "explanation_markdown": "This check verifies that the agent supports the `session/resume` capability.\n\n**Why is this important?**\n\n`session/resume` allows clients to reconnect to a previously created session without losing conversation history.",
           "status": "fail",
           "message": "Copilot did not advertise session resume support during initialization."
@@ -92,8 +83,7 @@
           "slug": "executes-terminal-commands",
           "position": 10,
           "label": "Executes terminal commands",
-          "description": "Successfully executes a command in response to a user request",
-          "explanation_markdown": "This check verifies that the agent actually executes a terminal command in response to a user request. The agent is asked to run a command that creates a file at a known path; the check passes if that file exists after the prompt completes. The agent may execute the command through the ACP [`terminal/create`](https://agentclientprotocol.com/protocol/terminals#executing-commands) method or through its own built-in execute tool — either is acceptable.\n\n**Why is this important?**\n\nAgents often need to run tests, builds, formatters, and other command-line tools. This check confirms that the agent is willing and able to execute commands when asked.",
+          "explanation_markdown": "This check verifies that the agent actually executes a terminal command in response to a user request. The agent is asked to run a command that creates a file at a known path; the check passes if that file exists after the prompt completes. The agent may execute the command through the ACP [`terminal/create`](https://agentclientprotocol.com/protocol/terminals#executing-commands) method or through its own built-in execute tool \u2014 either is acceptable.\n\n**Why is this important?**\n\nAgents often need to run tests, builds, formatters, and other command-line tools. This check confirms that the agent is willing and able to execute commands when asked.",
           "status": "pass",
           "message": "Copilot executed a terminal command that created the expected marker file."
         },
@@ -101,7 +91,6 @@
           "slug": "streams-terminal-command-output",
           "position": 11,
           "label": "Streams terminal output",
-          "description": "Polls terminal output while commands are running so command progress can be streamed",
           "explanation_markdown": "This check verifies that terminal command output is reported through ACP. Agents can satisfy this by polling a client-managed terminal with [`terminal/output`](https://agentclientprotocol.com/protocol/terminals#getting-output), or by reporting output in ACP `execute` tool call updates when the agent owns command execution.\n\n**Why is this important?**\n\nLong-running commands should not feel like black boxes. Polling terminal output lets the agent observe progress, react to failures, and keep users informed while work is still in progress.",
           "status": "pass",
           "message": "Copilot reported terminal command output through ACP execute tool call updates."
@@ -110,7 +99,6 @@
           "slug": "displays-terminal-command-when-in-progress",
           "position": 12,
           "label": "Displays running terminal command",
-          "description": "Embeds the active terminal in an in-progress execute tool call",
           "explanation_markdown": "This check verifies that the agent makes the running command visible through ACP while it is in progress. Agents can satisfy this by embedding client-managed terminal content in a `tool_call` or `tool_call_update`, or by emitting ACP `execute` tool call updates for an agent-managed terminal command.\n\n**Why is this important?**\n\nClients can only render a live terminal UI when the agent embeds the terminal ID in a tool call, but ACP `execute` tool calls still give users immediate visibility into which command is running and how it progresses.",
           "status": "pass",
           "message": "Copilot reported the running command through 2 ACP execute tool call update(s)."
@@ -119,7 +107,6 @@
           "slug": "displays-terminal-command-output",
           "position": 13,
           "label": "Displays terminal output",
-          "description": "Leaves terminal output visible to the user through terminal content embedded in tool calls",
           "explanation_markdown": "This check verifies that terminal output remains displayable in ACP session updates. Agents can satisfy this with embedded client-managed terminal content, or with ACP `execute` tool call content that includes the command result.\n\n**Why is this important?**\n\nUsers need to see the command output that led to the agent's next steps, especially for test failures, build errors, and generated logs. Terminal or `execute` tool call content lets clients display this output directly in the conversation.",
           "status": "pass",
           "message": "Copilot left the terminal output containing \"acp-verifier-terminal-output\" visible through ACP execute tool call content."
@@ -136,7 +123,6 @@
           "slug": "boot-time-500ms",
           "position": 1,
           "label": "Boot < 500ms",
-          "description": "Server cold-starts and responds to the first health-check request within 500 milliseconds",
           "explanation_markdown": "This check verifies that the agent boots and responds to the [`initialize`](https://agentclientprotocol.com/protocol/initialization) request within 500ms.\n\n**Why is this important?**\n\n- This affects the load time of the first chat session.",
           "status": "pass",
           "message": "Codex booted and responded to initialize in 173ms."
@@ -145,7 +131,6 @@
           "slug": "new-session-500ms",
           "position": 2,
           "label": "New session < 500ms",
-          "description": "Server cold-starts and handles a new session creation rqeuest within 500 milliseconds",
           "explanation_markdown": "This check verifies that the agent boots and responds to the `session/new` request within 500ms.",
           "status": "pass",
           "message": "Codex initialized and created a new session in 296ms."
@@ -154,7 +139,6 @@
           "slug": "listing-modes",
           "position": 3,
           "label": "Listing session modes",
-          "description": "Advertises supported modes (e.g., Ask/Plan/Build) through session config options",
           "explanation_markdown": "This check verifies that the agent supports modes through [Session Config Options](https://agentclientprotocol.com/protocol/session-config-options).\n\n**Why is this important?**\n\nClients need this information to render the current mode (for example Ask/Plan/Build) in the UI.\n\nAgents that support modes should expose a valid single-select session config option for modes, including the current value and the available values that clients can present to users.",
           "status": "pass",
           "message": "Codex advertised 1 mode(s): Approval Preset."
@@ -163,7 +147,6 @@
           "slug": "switch-mode",
           "position": 4,
           "label": "Switching modes",
-          "description": "Allows switching modes (e.g. Plan/Ask/Build) through session config options",
           "explanation_markdown": "This check verifies that the agent can switch modes using ACP Session Config Options.\n\n**Why is this important?**\n\nClients need reliable mode switching to implement shortcuts like `Shift+Tab`. If an agent exposes a mode config option with multiple values, it should accept another valid value via `session/set_config_option` and keep the session usable afterward.",
           "status": "pass",
           "message": "Codex switched mode from read-only to auto."
@@ -172,7 +155,6 @@
           "slug": "switch-mode-500ms",
           "position": 5,
           "label": "Switch mode < 500ms",
-          "description": "Changes the mode session configuration option within 500 milliseconds",
           "explanation_markdown": "This check verifies that the agent responds to a mode config option change within 500ms.\n\n**Why is this important?**\n\nMode switching is often exposed through keyboard shortcuts like `Shift+Tab`, so changing the mode config option should feel instantaneous. Slow config option updates make the client feel laggy and can interrupt the user's flow.",
           "status": "pass",
           "message": "Codex switched mode from read-only to auto in 2ms."
@@ -181,7 +163,6 @@
           "slug": "loads-skills",
           "position": 6,
           "label": "Loads skills",
-          "description": "Loads skills from `.agents/skills` in the working directory as slash commands",
           "explanation_markdown": "This check verifies that when a session is created with a working directory containing `.agents/skills`, the agent advertises those skills through [Slash Commands](https://agentclientprotocol.com/protocol/slash-commands).\n\n**Why is this important?**\n\nClients use slash command updates to show users which project-specific skills are available in the current workspace.\n\nAgents should discover skills from the session working directory and send an `available_commands_update` notification that includes each user-invocable skill.",
           "status": "fail",
           "message": "Codex did not advertise the acp-verifier-skill skill as a slash command within 5000ms."
@@ -190,7 +171,6 @@
           "slug": "loads-skills-500ms",
           "position": 7,
           "label": "Loads skills < 500ms",
-          "description": "Loads `.agents/skills` slash commands within 500 milliseconds of session creation",
           "explanation_markdown": "This check verifies that skills from the session working directory are advertised as slash commands within 500ms of calling `session/new`.\n\n**Why is this important?**\n\nProject skills affect the commands a client presents immediately after a session starts. Slow skill discovery can make command menus feel incomplete or laggy.",
           "status": "fail",
           "message": "Codex did not advertise the acp-verifier-skill skill within the 500ms target."
@@ -199,7 +179,6 @@
           "slug": "supports-session-close",
           "position": 8,
           "label": "Session close",
-          "description": "Properly handles session termination by cleaning up resources and acknowledging the close request",
           "explanation_markdown": "This check verifies that the agent supports the `session/close` capability.\n\n**Why is this important?**\n\n`session/close` is required to terminate a running session and free up resources.\n\n<!-- TODO: See if this is used to remove threads from the sidebar -->",
           "status": "pass",
           "message": "Codex advertised session close support and acknowledged session/close."
@@ -208,7 +187,6 @@
           "slug": "supports-session-resume",
           "position": 9,
           "label": "Session resume",
-          "description": "Can resume a previously started session and restore its state without losing context",
           "explanation_markdown": "This check verifies that the agent supports the `session/resume` capability.\n\n**Why is this important?**\n\n`session/resume` allows clients to reconnect to a previously created session without losing conversation history.",
           "status": "fail",
           "message": "Codex did not advertise session resume support during initialization."
@@ -217,8 +195,7 @@
           "slug": "executes-terminal-commands",
           "position": 10,
           "label": "Executes terminal commands",
-          "description": "Successfully executes a command in response to a user request",
-          "explanation_markdown": "This check verifies that the agent actually executes a terminal command in response to a user request. The agent is asked to run a command that creates a file at a known path; the check passes if that file exists after the prompt completes. The agent may execute the command through the ACP [`terminal/create`](https://agentclientprotocol.com/protocol/terminals#executing-commands) method or through its own built-in execute tool — either is acceptable.\n\n**Why is this important?**\n\nAgents often need to run tests, builds, formatters, and other command-line tools. This check confirms that the agent is willing and able to execute commands when asked.",
+          "explanation_markdown": "This check verifies that the agent actually executes a terminal command in response to a user request. The agent is asked to run a command that creates a file at a known path; the check passes if that file exists after the prompt completes. The agent may execute the command through the ACP [`terminal/create`](https://agentclientprotocol.com/protocol/terminals#executing-commands) method or through its own built-in execute tool \u2014 either is acceptable.\n\n**Why is this important?**\n\nAgents often need to run tests, builds, formatters, and other command-line tools. This check confirms that the agent is willing and able to execute commands when asked.",
           "status": "pass",
           "message": "Codex executed a terminal command that created the expected marker file."
         },
@@ -226,7 +203,6 @@
           "slug": "streams-terminal-command-output",
           "position": 11,
           "label": "Streams terminal output",
-          "description": "Polls terminal output while commands are running so command progress can be streamed",
           "explanation_markdown": "This check verifies that terminal command output is reported through ACP. Agents can satisfy this by polling a client-managed terminal with [`terminal/output`](https://agentclientprotocol.com/protocol/terminals#getting-output), or by reporting output in ACP `execute` tool call updates when the agent owns command execution.\n\n**Why is this important?**\n\nLong-running commands should not feel like black boxes. Polling terminal output lets the agent observe progress, react to failures, and keep users informed while work is still in progress.",
           "status": "fail",
           "message": "Codex did not request terminal output or report command output through ACP execute tool call updates."
@@ -235,7 +211,6 @@
           "slug": "displays-terminal-command-when-in-progress",
           "position": 12,
           "label": "Displays running terminal command",
-          "description": "Embeds the active terminal in an in-progress execute tool call",
           "explanation_markdown": "This check verifies that the agent makes the running command visible through ACP while it is in progress. Agents can satisfy this by embedding client-managed terminal content in a `tool_call` or `tool_call_update`, or by emitting ACP `execute` tool call updates for an agent-managed terminal command.\n\n**Why is this important?**\n\nClients can only render a live terminal UI when the agent embeds the terminal ID in a tool call, but ACP `execute` tool calls still give users immediate visibility into which command is running and how it progresses.",
           "status": "pass",
           "message": "Codex reported the running command through 2 ACP execute tool call update(s)."
@@ -244,7 +219,6 @@
           "slug": "displays-terminal-command-output",
           "position": 13,
           "label": "Displays terminal output",
-          "description": "Leaves terminal output visible to the user through terminal content embedded in tool calls",
           "explanation_markdown": "This check verifies that terminal output remains displayable in ACP session updates. Agents can satisfy this with embedded client-managed terminal content, or with ACP `execute` tool call content that includes the command result.\n\n**Why is this important?**\n\nUsers need to see the command output that led to the agent's next steps, especially for test failures, build errors, and generated logs. Terminal or `execute` tool call content lets clients display this output directly in the conversation.",
           "status": "fail",
           "message": "Codex did not leave the terminal output containing \"acp-verifier-terminal-output\" visible through terminal or ACP execute tool call content."
@@ -261,7 +235,6 @@
           "slug": "boot-time-500ms",
           "position": 1,
           "label": "Boot < 500ms",
-          "description": "Server cold-starts and responds to the first health-check request within 500 milliseconds",
           "explanation_markdown": "This check verifies that the agent boots and responds to the [`initialize`](https://agentclientprotocol.com/protocol/initialization) request within 500ms.\n\n**Why is this important?**\n\n- This affects the load time of the first chat session.",
           "status": "fail",
           "message": "OpenCode booted and responded to initialize in 785ms, exceeding the 500ms target."
@@ -270,7 +243,6 @@
           "slug": "new-session-500ms",
           "position": 2,
           "label": "New session < 500ms",
-          "description": "Server cold-starts and handles a new session creation rqeuest within 500 milliseconds",
           "explanation_markdown": "This check verifies that the agent boots and responds to the `session/new` request within 500ms.",
           "status": "fail",
           "message": "OpenCode took 1003ms to initialize and create a new session, exceeding the 500ms target."
@@ -279,7 +251,6 @@
           "slug": "listing-modes",
           "position": 3,
           "label": "Listing session modes",
-          "description": "Advertises supported modes (e.g., Ask/Plan/Build) through session config options",
           "explanation_markdown": "This check verifies that the agent supports modes through [Session Config Options](https://agentclientprotocol.com/protocol/session-config-options).\n\n**Why is this important?**\n\nClients need this information to render the current mode (for example Ask/Plan/Build) in the UI.\n\nAgents that support modes should expose a valid single-select session config option for modes, including the current value and the available values that clients can present to users.",
           "status": "pass",
           "message": "OpenCode advertised 1 mode(s): Session Mode."
@@ -288,7 +259,6 @@
           "slug": "switch-mode",
           "position": 4,
           "label": "Switching modes",
-          "description": "Allows switching modes (e.g. Plan/Ask/Build) through session config options",
           "explanation_markdown": "This check verifies that the agent can switch modes using ACP Session Config Options.\n\n**Why is this important?**\n\nClients need reliable mode switching to implement shortcuts like `Shift+Tab`. If an agent exposes a mode config option with multiple values, it should accept another valid value via `session/set_config_option` and keep the session usable afterward.",
           "status": "pass",
           "message": "OpenCode switched mode from build to plan."
@@ -297,7 +267,6 @@
           "slug": "switch-mode-500ms",
           "position": 5,
           "label": "Switch mode < 500ms",
-          "description": "Changes the mode session configuration option within 500 milliseconds",
           "explanation_markdown": "This check verifies that the agent responds to a mode config option change within 500ms.\n\n**Why is this important?**\n\nMode switching is often exposed through keyboard shortcuts like `Shift+Tab`, so changing the mode config option should feel instantaneous. Slow config option updates make the client feel laggy and can interrupt the user's flow.",
           "status": "pass",
           "message": "OpenCode switched mode from build to plan in 6ms."
@@ -306,7 +275,6 @@
           "slug": "loads-skills",
           "position": 6,
           "label": "Loads skills",
-          "description": "Loads skills from `.agents/skills` in the working directory as slash commands",
           "explanation_markdown": "This check verifies that when a session is created with a working directory containing `.agents/skills`, the agent advertises those skills through [Slash Commands](https://agentclientprotocol.com/protocol/slash-commands).\n\n**Why is this important?**\n\nClients use slash command updates to show users which project-specific skills are available in the current workspace.\n\nAgents should discover skills from the session working directory and send an `available_commands_update` notification that includes each user-invocable skill.",
           "status": "pass",
           "message": "OpenCode advertised the acp-verifier-skill skill as a slash command."
@@ -315,7 +283,6 @@
           "slug": "loads-skills-500ms",
           "position": 7,
           "label": "Loads skills < 500ms",
-          "description": "Loads `.agents/skills` slash commands within 500 milliseconds of session creation",
           "explanation_markdown": "This check verifies that skills from the session working directory are advertised as slash commands within 500ms of calling `session/new`.\n\n**Why is this important?**\n\nProject skills affect the commands a client presents immediately after a session starts. Slow skill discovery can make command menus feel incomplete or laggy.",
           "status": "fail",
           "message": "OpenCode advertised the acp-verifier-skill skill in 922ms, exceeding the 500ms target."
@@ -324,7 +291,6 @@
           "slug": "supports-session-close",
           "position": 8,
           "label": "Session close",
-          "description": "Properly handles session termination by cleaning up resources and acknowledging the close request",
           "explanation_markdown": "This check verifies that the agent supports the `session/close` capability.\n\n**Why is this important?**\n\n`session/close` is required to terminate a running session and free up resources.\n\n<!-- TODO: See if this is used to remove threads from the sidebar -->",
           "status": "fail",
           "message": "OpenCode did not advertise session close support during initialization."
@@ -333,7 +299,6 @@
           "slug": "supports-session-resume",
           "position": 9,
           "label": "Session resume",
-          "description": "Can resume a previously started session and restore its state without losing context",
           "explanation_markdown": "This check verifies that the agent supports the `session/resume` capability.\n\n**Why is this important?**\n\n`session/resume` allows clients to reconnect to a previously created session without losing conversation history.",
           "status": "pass",
           "message": "OpenCode advertised session resume support during initialization."
@@ -342,8 +307,7 @@
           "slug": "executes-terminal-commands",
           "position": 10,
           "label": "Executes terminal commands",
-          "description": "Successfully executes a command in response to a user request",
-          "explanation_markdown": "This check verifies that the agent actually executes a terminal command in response to a user request. The agent is asked to run a command that creates a file at a known path; the check passes if that file exists after the prompt completes. The agent may execute the command through the ACP [`terminal/create`](https://agentclientprotocol.com/protocol/terminals#executing-commands) method or through its own built-in execute tool — either is acceptable.\n\n**Why is this important?**\n\nAgents often need to run tests, builds, formatters, and other command-line tools. This check confirms that the agent is willing and able to execute commands when asked.",
+          "explanation_markdown": "This check verifies that the agent actually executes a terminal command in response to a user request. The agent is asked to run a command that creates a file at a known path; the check passes if that file exists after the prompt completes. The agent may execute the command through the ACP [`terminal/create`](https://agentclientprotocol.com/protocol/terminals#executing-commands) method or through its own built-in execute tool \u2014 either is acceptable.\n\n**Why is this important?**\n\nAgents often need to run tests, builds, formatters, and other command-line tools. This check confirms that the agent is willing and able to execute commands when asked.",
           "status": "pass",
           "message": "OpenCode executed a terminal command that created the expected marker file."
         },
@@ -351,7 +315,6 @@
           "slug": "streams-terminal-command-output",
           "position": 11,
           "label": "Streams terminal output",
-          "description": "Polls terminal output while commands are running so command progress can be streamed",
           "explanation_markdown": "This check verifies that terminal command output is reported through ACP. Agents can satisfy this by polling a client-managed terminal with [`terminal/output`](https://agentclientprotocol.com/protocol/terminals#getting-output), or by reporting output in ACP `execute` tool call updates when the agent owns command execution.\n\n**Why is this important?**\n\nLong-running commands should not feel like black boxes. Polling terminal output lets the agent observe progress, react to failures, and keep users informed while work is still in progress.",
           "status": "pass",
           "message": "OpenCode reported terminal command output through ACP execute tool call updates."
@@ -360,7 +323,6 @@
           "slug": "displays-terminal-command-when-in-progress",
           "position": 12,
           "label": "Displays running terminal command",
-          "description": "Embeds the active terminal in an in-progress execute tool call",
           "explanation_markdown": "This check verifies that the agent makes the running command visible through ACP while it is in progress. Agents can satisfy this by embedding client-managed terminal content in a `tool_call` or `tool_call_update`, or by emitting ACP `execute` tool call updates for an agent-managed terminal command.\n\n**Why is this important?**\n\nClients can only render a live terminal UI when the agent embeds the terminal ID in a tool call, but ACP `execute` tool calls still give users immediate visibility into which command is running and how it progresses.",
           "status": "pass",
           "message": "OpenCode reported the running command through 5 ACP execute tool call update(s)."
@@ -369,7 +331,6 @@
           "slug": "displays-terminal-command-output",
           "position": 13,
           "label": "Displays terminal output",
-          "description": "Leaves terminal output visible to the user through terminal content embedded in tool calls",
           "explanation_markdown": "This check verifies that terminal output remains displayable in ACP session updates. Agents can satisfy this with embedded client-managed terminal content, or with ACP `execute` tool call content that includes the command result.\n\n**Why is this important?**\n\nUsers need to see the command output that led to the agent's next steps, especially for test failures, build errors, and generated logs. Terminal or `execute` tool call content lets clients display this output directly in the conversation.",
           "status": "pass",
           "message": "OpenCode left the terminal output containing \"acp-verifier-terminal-output\" visible through ACP execute tool call content."
@@ -386,7 +347,6 @@
           "slug": "boot-time-500ms",
           "position": 1,
           "label": "Boot < 500ms",
-          "description": "Server cold-starts and responds to the first health-check request within 500 milliseconds",
           "explanation_markdown": "This check verifies that the agent boots and responds to the [`initialize`](https://agentclientprotocol.com/protocol/initialization) request within 500ms.\n\n**Why is this important?**\n\n- This affects the load time of the first chat session.",
           "status": "pass",
           "message": "Claude Code booted and responded to initialize in 237ms."
@@ -395,7 +355,6 @@
           "slug": "new-session-500ms",
           "position": 2,
           "label": "New session < 500ms",
-          "description": "Server cold-starts and handles a new session creation rqeuest within 500 milliseconds",
           "explanation_markdown": "This check verifies that the agent boots and responds to the `session/new` request within 500ms.",
           "status": "fail",
           "message": "Claude Code took 528ms to initialize and create a new session, exceeding the 500ms target."
@@ -404,7 +363,6 @@
           "slug": "listing-modes",
           "position": 3,
           "label": "Listing session modes",
-          "description": "Advertises supported modes (e.g., Ask/Plan/Build) through session config options",
           "explanation_markdown": "This check verifies that the agent supports modes through [Session Config Options](https://agentclientprotocol.com/protocol/session-config-options).\n\n**Why is this important?**\n\nClients need this information to render the current mode (for example Ask/Plan/Build) in the UI.\n\nAgents that support modes should expose a valid single-select session config option for modes, including the current value and the available values that clients can present to users.",
           "status": "pass",
           "message": "Claude Code advertised 1 mode(s): Mode."
@@ -413,7 +371,6 @@
           "slug": "switch-mode",
           "position": 4,
           "label": "Switching modes",
-          "description": "Allows switching modes (e.g. Plan/Ask/Build) through session config options",
           "explanation_markdown": "This check verifies that the agent can switch modes using ACP Session Config Options.\n\n**Why is this important?**\n\nClients need reliable mode switching to implement shortcuts like `Shift+Tab`. If an agent exposes a mode config option with multiple values, it should accept another valid value via `session/set_config_option` and keep the session usable afterward.",
           "status": "pass",
           "message": "Claude Code switched mode from default to auto."
@@ -422,7 +379,6 @@
           "slug": "switch-mode-500ms",
           "position": 5,
           "label": "Switch mode < 500ms",
-          "description": "Changes the mode session configuration option within 500 milliseconds",
           "explanation_markdown": "This check verifies that the agent responds to a mode config option change within 500ms.\n\n**Why is this important?**\n\nMode switching is often exposed through keyboard shortcuts like `Shift+Tab`, so changing the mode config option should feel instantaneous. Slow config option updates make the client feel laggy and can interrupt the user's flow.",
           "status": "pass",
           "message": "Claude Code switched mode from default to auto in 7ms."
@@ -431,7 +387,6 @@
           "slug": "loads-skills",
           "position": 6,
           "label": "Loads skills",
-          "description": "Loads skills from `.agents/skills` in the working directory as slash commands",
           "explanation_markdown": "This check verifies that when a session is created with a working directory containing `.agents/skills`, the agent advertises those skills through [Slash Commands](https://agentclientprotocol.com/protocol/slash-commands).\n\n**Why is this important?**\n\nClients use slash command updates to show users which project-specific skills are available in the current workspace.\n\nAgents should discover skills from the session working directory and send an `available_commands_update` notification that includes each user-invocable skill.",
           "status": "pass",
           "message": "Claude Code advertised the acp-verifier-skill skill as a slash command."
@@ -440,7 +395,6 @@
           "slug": "loads-skills-500ms",
           "position": 7,
           "label": "Loads skills < 500ms",
-          "description": "Loads `.agents/skills` slash commands within 500 milliseconds of session creation",
           "explanation_markdown": "This check verifies that skills from the session working directory are advertised as slash commands within 500ms of calling `session/new`.\n\n**Why is this important?**\n\nProject skills affect the commands a client presents immediately after a session starts. Slow skill discovery can make command menus feel incomplete or laggy.",
           "status": "fail",
           "message": "Claude Code advertised the acp-verifier-skill skill in 944ms, exceeding the 500ms target."
@@ -449,7 +403,6 @@
           "slug": "supports-session-close",
           "position": 8,
           "label": "Session close",
-          "description": "Properly handles session termination by cleaning up resources and acknowledging the close request",
           "explanation_markdown": "This check verifies that the agent supports the `session/close` capability.\n\n**Why is this important?**\n\n`session/close` is required to terminate a running session and free up resources.\n\n<!-- TODO: See if this is used to remove threads from the sidebar -->",
           "status": "pass",
           "message": "Claude Code advertised session close support and acknowledged session/close."
@@ -458,7 +411,6 @@
           "slug": "supports-session-resume",
           "position": 9,
           "label": "Session resume",
-          "description": "Can resume a previously started session and restore its state without losing context",
           "explanation_markdown": "This check verifies that the agent supports the `session/resume` capability.\n\n**Why is this important?**\n\n`session/resume` allows clients to reconnect to a previously created session without losing conversation history.",
           "status": "pass",
           "message": "Claude Code advertised session resume support during initialization."
@@ -467,8 +419,7 @@
           "slug": "executes-terminal-commands",
           "position": 10,
           "label": "Executes terminal commands",
-          "description": "Successfully executes a command in response to a user request",
-          "explanation_markdown": "This check verifies that the agent actually executes a terminal command in response to a user request. The agent is asked to run a command that creates a file at a known path; the check passes if that file exists after the prompt completes. The agent may execute the command through the ACP [`terminal/create`](https://agentclientprotocol.com/protocol/terminals#executing-commands) method or through its own built-in execute tool — either is acceptable.\n\n**Why is this important?**\n\nAgents often need to run tests, builds, formatters, and other command-line tools. This check confirms that the agent is willing and able to execute commands when asked.",
+          "explanation_markdown": "This check verifies that the agent actually executes a terminal command in response to a user request. The agent is asked to run a command that creates a file at a known path; the check passes if that file exists after the prompt completes. The agent may execute the command through the ACP [`terminal/create`](https://agentclientprotocol.com/protocol/terminals#executing-commands) method or through its own built-in execute tool \u2014 either is acceptable.\n\n**Why is this important?**\n\nAgents often need to run tests, builds, formatters, and other command-line tools. This check confirms that the agent is willing and able to execute commands when asked.",
           "status": "pass",
           "message": "Claude Code executed a terminal command that created the expected marker file."
         },
@@ -476,7 +427,6 @@
           "slug": "streams-terminal-command-output",
           "position": 11,
           "label": "Streams terminal output",
-          "description": "Polls terminal output while commands are running so command progress can be streamed",
           "explanation_markdown": "This check verifies that terminal command output is reported through ACP. Agents can satisfy this by polling a client-managed terminal with [`terminal/output`](https://agentclientprotocol.com/protocol/terminals#getting-output), or by reporting output in ACP `execute` tool call updates when the agent owns command execution.\n\n**Why is this important?**\n\nLong-running commands should not feel like black boxes. Polling terminal output lets the agent observe progress, react to failures, and keep users informed while work is still in progress.",
           "status": "pass",
           "message": "Claude Code reported terminal command output through ACP execute tool call updates."
@@ -485,7 +435,6 @@
           "slug": "displays-terminal-command-when-in-progress",
           "position": 12,
           "label": "Displays running terminal command",
-          "description": "Embeds the active terminal in an in-progress execute tool call",
           "explanation_markdown": "This check verifies that the agent makes the running command visible through ACP while it is in progress. Agents can satisfy this by embedding client-managed terminal content in a `tool_call` or `tool_call_update`, or by emitting ACP `execute` tool call updates for an agent-managed terminal command.\n\n**Why is this important?**\n\nClients can only render a live terminal UI when the agent embeds the terminal ID in a tool call, but ACP `execute` tool calls still give users immediate visibility into which command is running and how it progresses.",
           "status": "pass",
           "message": "Claude Code reported the running command through 4 ACP execute tool call update(s)."
@@ -494,7 +443,6 @@
           "slug": "displays-terminal-command-output",
           "position": 13,
           "label": "Displays terminal output",
-          "description": "Leaves terminal output visible to the user through terminal content embedded in tool calls",
           "explanation_markdown": "This check verifies that terminal output remains displayable in ACP session updates. Agents can satisfy this with embedded client-managed terminal content, or with ACP `execute` tool call content that includes the command result.\n\n**Why is this important?**\n\nUsers need to see the command output that led to the agent's next steps, especially for test failures, build errors, and generated logs. Terminal or `execute` tool call content lets clients display this output directly in the conversation.",
           "status": "pass",
           "message": "Claude Code left the terminal output containing \"acp-verifier-terminal-output\" visible through ACP execute tool call content."
@@ -511,7 +459,6 @@
           "slug": "boot-time-500ms",
           "position": 1,
           "label": "Boot < 500ms",
-          "description": "Server cold-starts and responds to the first health-check request within 500 milliseconds",
           "explanation_markdown": "This check verifies that the agent boots and responds to the [`initialize`](https://agentclientprotocol.com/protocol/initialization) request within 500ms.",
           "status": "fail",
           "message": "Docker Agent booted and responded to initialize in 508ms, exceeding the 500ms target."
@@ -520,7 +467,6 @@
           "slug": "new-session-500ms",
           "position": 2,
           "label": "New session < 500ms",
-          "description": "Server cold-starts and handles a new session creation rqeuest within 500 milliseconds",
           "explanation_markdown": "This check verifies that the agent boots and responds to the `session/new` request within 500ms.",
           "status": "pass",
           "message": "Docker Agent initialized and created a new session in 374ms."
@@ -529,7 +475,6 @@
           "slug": "listing-modes",
           "position": 3,
           "label": "Listing session modes",
-          "description": "Advertises supported modes (e.g., Ask/Plan/Build) through session config options",
           "explanation_markdown": "This check verifies that the agent supports modes through [Session Config Options](https://agentclientprotocol.com/protocol/session-config-options).\n\n**Why is this important?**\n\nClients need this information to render the current mode (for example Ask/Plan/Build) in the UI.\n\nAgents that support modes should expose a valid single-select session config option for modes, including the current value and the available values that clients can present to users.",
           "status": "fail",
           "message": "Docker Agent did not advertise any session modes (e.g. Ask/Build/Plan)."
@@ -538,7 +483,6 @@
           "slug": "switch-mode",
           "position": 4,
           "label": "Switching modes",
-          "description": "Allows switching modes (e.g. Plan/Ask/Build) through session config options",
           "explanation_markdown": "This check verifies that the agent can switch modes using ACP Session Config Options.\n\n**Why is this important?**\n\nClients need reliable mode switching to implement shortcuts like `Shift+Tab`. If an agent exposes a mode config option with multiple values, it should accept another valid value via `session/set_config_option` and keep the session usable afterward.",
           "status": "fail",
           "message": "Docker Agent does not support modes"
@@ -547,7 +491,6 @@
           "slug": "switch-mode-500ms",
           "position": 5,
           "label": "Switch mode < 500ms",
-          "description": "Changes the mode session configuration option within 500 milliseconds",
           "explanation_markdown": "This check verifies that the agent responds to a mode config option change within 500ms.\n\n**Why is this important?**\n\nMode switching is often exposed through keyboard shortcuts like `Shift+Tab`, so changing the mode config option should feel instantaneous. Slow config option updates make the client feel laggy and can interrupt the user's flow.",
           "status": "fail",
           "message": "Docker Agent does not support modes"
@@ -556,7 +499,6 @@
           "slug": "loads-skills",
           "position": 6,
           "label": "Loads skills",
-          "description": "Loads skills from `.agents/skills` in the working directory as slash commands",
           "explanation_markdown": "This check verifies that when a session is created with a working directory containing `.agents/skills`, the agent advertises those skills through [Slash Commands](https://agentclientprotocol.com/protocol/slash-commands).\n\n**Why is this important?**\n\nClients use slash command updates to show users which project-specific skills are available in the current workspace.\n\nAgents should discover skills from the session working directory and send an `available_commands_update` notification that includes each user-invocable skill.",
           "status": "fail",
           "message": "Docker Agent did not advertise the acp-verifier-skill skill as a slash command within 5000ms."
@@ -565,7 +507,6 @@
           "slug": "loads-skills-500ms",
           "position": 7,
           "label": "Loads skills < 500ms",
-          "description": "Loads `.agents/skills` slash commands within 500 milliseconds of session creation",
           "explanation_markdown": "This check verifies that skills from the session working directory are advertised as slash commands within 500ms of calling `session/new`.\n\n**Why is this important?**\n\nProject skills affect the commands a client presents immediately after a session starts. Slow skill discovery can make command menus feel incomplete or laggy.",
           "status": "fail",
           "message": "Docker Agent did not advertise the acp-verifier-skill skill within the 500ms target."
@@ -574,7 +515,6 @@
           "slug": "supports-session-close",
           "position": 8,
           "label": "Session close",
-          "description": "Properly handles session termination by cleaning up resources and acknowledging the close request",
           "explanation_markdown": "This check verifies that the agent supports the `session/close` capability.\n\n**Why is this important?**\n\n`session/close` is required to terminate a running session and free up resources.\n\n<!-- TODO: See if this is used to remove threads from the sidebar -->",
           "status": "fail",
           "message": "Docker Agent did not advertise session close support during initialization."
@@ -583,7 +523,6 @@
           "slug": "supports-session-resume",
           "position": 9,
           "label": "Session resume",
-          "description": "Can resume a previously started session and restore its state without losing context",
           "explanation_markdown": "This check verifies that the agent supports the `session/resume` capability.\n\n**Why is this important?**\n\n`session/resume` allows clients to reconnect to a previously created session without losing conversation history.",
           "status": "fail",
           "message": "Docker Agent did not advertise session resume support during initialization."
@@ -592,8 +531,7 @@
           "slug": "executes-terminal-commands",
           "position": 10,
           "label": "Executes terminal commands",
-          "description": "Successfully executes a command in response to a user request",
-          "explanation_markdown": "This check verifies that the agent actually executes a terminal command in response to a user request. The agent is asked to run a command that creates a file at a known path; the check passes if that file exists after the prompt completes. The agent may execute the command through the ACP [`terminal/create`](https://agentclientprotocol.com/protocol/terminals#executing-commands) method or through its own built-in execute tool — either is acceptable.\n\n**Why is this important?**\n\nAgents often need to run tests, builds, formatters, and other command-line tools. This check confirms that the agent is willing and able to execute commands when asked.",
+          "explanation_markdown": "This check verifies that the agent actually executes a terminal command in response to a user request. The agent is asked to run a command that creates a file at a known path; the check passes if that file exists after the prompt completes. The agent may execute the command through the ACP [`terminal/create`](https://agentclientprotocol.com/protocol/terminals#executing-commands) method or through its own built-in execute tool \u2014 either is acceptable.\n\n**Why is this important?**\n\nAgents often need to run tests, builds, formatters, and other command-line tools. This check confirms that the agent is willing and able to execute commands when asked.",
           "status": "pass",
           "message": "Docker Agent executed a terminal command that created the expected marker file."
         },
@@ -601,7 +539,6 @@
           "slug": "streams-terminal-command-output",
           "position": 11,
           "label": "Streams terminal output",
-          "description": "Polls terminal output while commands are running so command progress can be streamed",
           "explanation_markdown": "This check verifies that terminal command output is reported through ACP. Agents can satisfy this by polling a client-managed terminal with [`terminal/output`](https://agentclientprotocol.com/protocol/terminals#getting-output), or by reporting output in ACP `execute` tool call updates when the agent owns command execution.\n\n**Why is this important?**\n\nLong-running commands should not feel like black boxes. Polling terminal output lets the agent observe progress, react to failures, and keep users informed while work is still in progress.",
           "status": "pass",
           "message": "Docker Agent reported terminal command output through ACP execute tool call updates."
@@ -610,7 +547,6 @@
           "slug": "displays-terminal-command-when-in-progress",
           "position": 12,
           "label": "Displays running terminal command",
-          "description": "Embeds the active terminal in an in-progress execute tool call",
           "explanation_markdown": "This check verifies that the agent makes the running command visible through ACP while it is in progress. Agents can satisfy this by embedding client-managed terminal content in a `tool_call` or `tool_call_update`, or by emitting ACP `execute` tool call updates for an agent-managed terminal command.\n\n**Why is this important?**\n\nClients can only render a live terminal UI when the agent embeds the terminal ID in a tool call, but ACP `execute` tool calls still give users immediate visibility into which command is running and how it progresses.",
           "status": "pass",
           "message": "Docker Agent reported the running command through 2 ACP execute tool call update(s)."
@@ -619,7 +555,6 @@
           "slug": "displays-terminal-command-output",
           "position": 13,
           "label": "Displays terminal output",
-          "description": "Leaves terminal output visible to the user through terminal content embedded in tool calls",
           "explanation_markdown": "This check verifies that terminal output remains displayable in ACP session updates. Agents can satisfy this with embedded client-managed terminal content, or with ACP `execute` tool call content that includes the command result.\n\n**Why is this important?**\n\nUsers need to see the command output that led to the agent's next steps, especially for test failures, build errors, and generated logs. Terminal or `execute` tool call content lets clients display this output directly in the conversation.",
           "status": "pass",
           "message": "Docker Agent left the terminal output containing \"acp-verifier-terminal-output\" visible through ACP execute tool call content."

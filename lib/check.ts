@@ -5,27 +5,18 @@ import type { CheckSlug } from "./generated/check-slugs";
 
 type CheckFrontmatter = {
   label: string;
-  description: string;
 };
 
 export class Check {
   readonly slug: CheckSlug;
   readonly position: number;
   readonly label: string;
-  readonly description: string;
   readonly explanationMarkdown: string;
 
-  constructor(opts: {
-    slug: CheckSlug;
-    position: number;
-    label: string;
-    description: string;
-    explanationMarkdown: string;
-  }) {
+  constructor(opts: { slug: CheckSlug; position: number; label: string; explanationMarkdown: string }) {
     this.slug = opts.slug;
     this.position = opts.position;
     this.label = opts.label;
-    this.description = opts.description;
     this.explanationMarkdown = opts.explanationMarkdown;
   }
 
@@ -37,7 +28,6 @@ export class Check {
       slug,
       position,
       label: frontmatter.label,
-      description: frontmatter.description,
       explanationMarkdown: body,
     });
   }

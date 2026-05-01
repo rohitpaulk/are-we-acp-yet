@@ -1,6 +1,5 @@
 ---
 label: Displays running terminal command
-description: Embeds the active terminal in an in-progress execute tool call
 ---
 
 This check verifies that the agent makes the running command visible through ACP while it is in progress. Agents can satisfy this by embedding client-managed terminal content in a `tool_call` or `tool_call_update`, or by emitting ACP `execute` tool call updates for an agent-managed terminal command.

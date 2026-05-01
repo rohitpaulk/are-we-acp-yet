@@ -1,6 +1,5 @@
 ---
 label: Session close
-description: Properly handles session termination by cleaning up resources and acknowledging the close request
 ---
 
 This check verifies that the agent supports the `session/close` capability.

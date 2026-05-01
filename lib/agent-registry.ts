@@ -8,20 +8,22 @@ export class AgentRegistry {
   readonly agents: Agent[];
 
   constructor() {
-    const all = this.discover();
+    const agents = this.#discover();
 
-    const filter = process.env.AGENTS?.split(",")
+    const agentsFilter = process.env.AGENTS?.split(",")
       .map((s) => s.trim())
       .filter(Boolean);
 
-    if (filter?.length) {
-      const unknown = filter.filter((slug) => !all.some((a) => a.slug === slug));
-      if (unknown.length) {
-        throw new Error(`Unknown agent(s) in AGENTS env var: ${unknown.join(", ")}`);
+    if (agentsFilter?.length) {
+      const invalidAgentSlugs = agentsFilter.filter((slug) => !agents.some((agent) => agent.slug === slug));
+
+      if (invalidAgentSlugs.length) {
+        throw new Error(`Invalid AGENTS filter: ${invalidAgentSlugs.join(", ")}`);
       }
-      this.agents = all.filter((a) => filter.includes(a.slug));
+
+      this.agents = agents.filter((agent) => agentsFilter.includes(agent.slug));
     } else {
-      this.agents = all;
+      this.agents = agents;
     }
   }
 
@@ -37,16 +39,16 @@ export class AgentRegistry {
     return agent;
   }
 
-  private discover(): Agent[] {
-    const entries = readdirSync(AGENTS_DIR, { withFileTypes: true });
-    return entries.filter((e) => e.isDirectory()).map((e) => Agent.fromDir(e.name));
-  }
-
   async buildAllImages(): Promise<void> {
     console.log();
     for (const agent of this.agents) {
       await agent.buildImage();
     }
     console.log();
+  }
+
+  #discover(): Agent[] {
+    const entries = readdirSync(AGENTS_DIR, { withFileTypes: true });
+    return entries.filter((e) => e.isDirectory()).map((e) => Agent.fromDir(e.name));
   }
 }

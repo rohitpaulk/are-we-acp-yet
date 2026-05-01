@@ -1,6 +1,5 @@
 ---
 label: Listing session modes
-description: Advertises supported modes (e.g., Ask/Plan/Build) through session config options
 ---
 
 This check verifies that the agent supports modes through [Session Config Options](https://agentclientprotocol.com/protocol/session-config-options).

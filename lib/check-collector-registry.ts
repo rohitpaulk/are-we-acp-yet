@@ -46,7 +46,6 @@ export class CheckCollectorRegistry {
           slug: check.slug,
           position: check.position,
           label: check.label,
-          description: check.description,
           explanation_markdown: check.explanationMarkdown,
           status: checkStatus(collector, slug),
           message,

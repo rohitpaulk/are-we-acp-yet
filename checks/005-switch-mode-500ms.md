@@ -1,6 +1,5 @@
 ---
 label: Switch mode < 500ms
-description: Changes the mode session configuration option within 500 milliseconds
 ---
 
 This check verifies that the agent responds to a mode config option change within 500ms.

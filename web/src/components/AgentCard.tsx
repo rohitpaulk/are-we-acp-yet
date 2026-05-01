@@ -11,7 +11,6 @@ export interface Check {
   slug: string;
   position: number;
   label: string;
-  description: string;
   explanation_markdown: string;
   status: string;
   message: string;
