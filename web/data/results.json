@@ -1,5 +1,5 @@
 {
-  "lastUpdated": "2026-04-30",
+  "lastUpdated": "2026-05-01",
   "agents": [
     {
       "slug": "copilot",
@@ -14,7 +14,7 @@
           "description": "Server cold-starts and responds to the first health-check request within 500 milliseconds",
           "explanation_markdown": "<p>This check verifies that the agent boots and responds to the <code>session/new</code> request within 500ms.</p>\n",
           "status": "fail",
-          "message": "Copilot booted and responded to initialize in 3144ms, exceeding the 500ms target."
+          "message": "Copilot booted and responded to initialize in 2746ms, exceeding the 500ms target."
         },
         {
           "slug": "listing-modes",
@@ -41,7 +41,7 @@
           "description": "Changes the mode session configuration option within 500 milliseconds",
           "explanation_markdown": "<p>This check verifies that the agent responds to a mode config option change within 500ms.</p>\n<h3>Why is this important?</h3>\n<p>Mode switching is often exposed through keyboard shortcuts like <code>Shift+Tab</code>, so changing the mode config option should feel instantaneous. Slow config option updates make the client feel laggy and can interrupt the user&#39;s flow.</p>\n",
           "status": "pass",
-          "message": "Copilot switched mode from https://agentclientprotocol.com/protocol/session-modes#agent to https://agentclientprotocol.com/protocol/session-modes#plan in 8ms."
+          "message": "Copilot switched mode from https://agentclientprotocol.com/protocol/session-modes#agent to https://agentclientprotocol.com/protocol/session-modes#plan in 4ms."
         },
         {
           "slug": "loads-skills",
@@ -118,122 +118,6 @@
       ]
     },
     {
-      "slug": "poolside",
-      "name": "Pool",
-      "company": "Poolside",
-      "version_string": "v1.0.0",
-      "checks": [
-        {
-          "slug": "boot-time-500ms",
-          "position": 1,
-          "label": "Boot < 500ms",
-          "description": "Server cold-starts and responds to the first health-check request within 500 milliseconds",
-          "explanation_markdown": "<p>This check verifies that the agent boots and responds to the <code>session/new</code> request within 500ms.</p>\n",
-          "status": "pass",
-          "message": "Pool booted and responded to initialize in 177ms."
-        },
-        {
-          "slug": "listing-modes",
-          "position": 2,
-          "label": "Listing session modes",
-          "description": "Advertises supported modes (e.g., Ask/Plan/Build) through session config options",
-          "explanation_markdown": "<p>This check verifies that the agent supports modes through <a href=\"https://agentclientprotocol.com/protocol/session-config-options\">Session Config Options</a>.</p>\n<h3>Why is this important?</h3>\n<p>Clients need this information to render the current mode (for example Ask/Plan/Build) in the UI.</p>\n<p>Agents that support modes should expose a valid single-select session config option for modes, including the current value and the available values that clients can present to users.</p>\n",
-          "status": "pass",
-          "message": "Pool advertised 1 mode(s): Mode."
-        },
-        {
-          "slug": "switch-mode",
-          "position": 3,
-          "label": "Switching modes",
-          "description": "Allows switching modes (e.g. Plan/Ask/Build) through session config options",
-          "explanation_markdown": "<p>This check verifies that the agent can switch modes using ACP Session Config Options.</p>\n<h3>Why is this important?</h3>\n<p>Clients need reliable mode switching to implement shortcuts like <code>Shift+Tab</code>. If an agent exposes a mode config option with multiple values, it should accept another valid value via <code>session/set_config_option</code> and keep the session usable afterward.</p>\n",
-          "status": "pass",
-          "message": "Pool switched mode from default to accept-edits."
-        },
-        {
-          "slug": "switch-mode-500ms",
-          "position": 4,
-          "label": "Switch mode < 500ms",
-          "description": "Changes the mode session configuration option within 500 milliseconds",
-          "explanation_markdown": "<p>This check verifies that the agent responds to a mode config option change within 500ms.</p>\n<h3>Why is this important?</h3>\n<p>Mode switching is often exposed through keyboard shortcuts like <code>Shift+Tab</code>, so changing the mode config option should feel instantaneous. Slow config option updates make the client feel laggy and can interrupt the user&#39;s flow.</p>\n",
-          "status": "pass",
-          "message": "Pool switched mode from default to accept-edits in 1ms."
-        },
-        {
-          "slug": "loads-skills",
-          "position": 5,
-          "label": "Loads skills",
-          "description": "Loads skills from `.agents/skills` in the working directory as slash commands",
-          "explanation_markdown": "<p>This check verifies that when a session is created with a working directory containing <code>.agents/skills</code>, the agent advertises those skills through <a href=\"https://agentclientprotocol.com/protocol/slash-commands\">Slash Commands</a>.</p>\n<h3>Why is this important?</h3>\n<p>Clients use slash command updates to show users which project-specific skills are available in the current workspace.</p>\n<p>Agents should discover skills from the session working directory and send an <code>available_commands_update</code> notification that includes each user-invocable skill.</p>\n",
-          "status": "fail",
-          "message": "Pool did not advertise the acp-verifier-skill skill as a slash command within 5000ms."
-        },
-        {
-          "slug": "loads-skills-500ms",
-          "position": 6,
-          "label": "Loads skills < 500ms",
-          "description": "Loads `.agents/skills` slash commands within 500 milliseconds of session creation",
-          "explanation_markdown": "<p>This check verifies that skills from the session working directory are advertised as slash commands within 500ms of calling <code>session/new</code>.</p>\n<h3>Why is this important?</h3>\n<p>Project skills affect the commands a client presents immediately after a session starts. Slow skill discovery can make command menus feel incomplete or laggy.</p>\n",
-          "status": "fail",
-          "message": "Pool did not advertise the acp-verifier-skill skill within the 500ms target."
-        },
-        {
-          "slug": "supports-session-close",
-          "position": 7,
-          "label": "Session close",
-          "description": "Properly handles session termination by cleaning up resources and acknowledging the close request",
-          "explanation_markdown": "<p>This check verifies that the agent supports the <code>session/close</code> capability.</p>\n<h3>Why is this important?</h3>\n<p><code>session/close</code> is required to terminate a running session and free up resources.</p>\n<!-- TODO: See if this is used to remove threads from the sidebar -->",
-          "status": "fail",
-          "message": "Pool did not advertise session close support during initialization."
-        },
-        {
-          "slug": "supports-session-resume",
-          "position": 8,
-          "label": "Session resume",
-          "description": "Can resume a previously started session and restore its state without losing context",
-          "explanation_markdown": "<p>This check verifies that the agent supports the <code>session/resume</code> capability.</p>\n<h3>Why is this important?</h3>\n<p><code>session/resume</code> allows clients to reconnect to a previously created session without losing conversation history.</p>\n",
-          "status": "fail",
-          "message": "Pool did not advertise session resume support during initialization."
-        },
-        {
-          "slug": "executes-terminal-commands",
-          "position": 9,
-          "label": "Executes terminal commands",
-          "description": "Successfully executes a command in response to a user request",
-          "explanation_markdown": "<p>This check verifies that the agent actually executes a terminal command in response to a user request. The agent is asked to run a command that creates a file at a known path; the check passes if that file exists after the prompt completes. The agent may execute the command through the ACP <a href=\"https://agentclientprotocol.com/protocol/terminals#executing-commands\"><code>terminal/create</code></a> method or through its own built-in execute tool — either is acceptable.</p>\n<h3>Why is this important?</h3>\n<p>Agents often need to run tests, builds, formatters, and other command-line tools. This check confirms that the agent is willing and able to execute commands when asked.</p>\n",
-          "status": "pass",
-          "message": "Pool executed a terminal command that created the expected marker file."
-        },
-        {
-          "slug": "streams-terminal-command-output",
-          "position": 10,
-          "label": "Streams terminal output",
-          "description": "Polls terminal output while commands are running so command progress can be streamed",
-          "explanation_markdown": "<p>This check verifies that after creating a terminal, the agent requests the command&#39;s output through <a href=\"https://agentclientprotocol.com/protocol/terminals#getting-output\"><code>terminal/output</code></a>.</p>\n<h3>Why is this important?</h3>\n<p>Long-running commands should not feel like black boxes. Polling terminal output lets the agent observe progress, react to failures, and keep users informed while work is still in progress.</p>\n",
-          "status": "fail",
-          "message": "Pool did not request terminal output while the command ran."
-        },
-        {
-          "slug": "displays-terminal-command-when-in-progress",
-          "position": 11,
-          "label": "Displays running terminal command",
-          "description": "Embeds the active terminal in an in-progress execute tool call",
-          "explanation_markdown": "<p>This check verifies that the agent includes terminal content in a <code>tool_call</code> or <code>tool_call_update</code> while the command is in progress.</p>\n<h3>Why is this important?</h3>\n<p>Clients can only render a live terminal UI when the agent embeds the terminal ID in a tool call. This gives users immediate visibility into which command is running and where to watch its progress.</p>\n",
-          "status": "fail",
-          "message": "Pool did not embed the active terminal in an in-progress tool call update."
-        },
-        {
-          "slug": "displays-terminal-command-output",
-          "position": 12,
-          "label": "Displays terminal output",
-          "description": "Leaves terminal output visible to the user through terminal content embedded in tool calls",
-          "explanation_markdown": "<p>This check verifies that terminal output remains displayable by embedding the terminal in a tool call whose output contains the command result.</p>\n<h3>Why is this important?</h3>\n<p>Users need to see the command output that led to the agent&#39;s next steps, especially for test failures, build errors, and generated logs. Terminal content in tool calls lets clients display this output directly in the conversation.</p>\n",
-          "status": "fail",
-          "message": "Pool did not leave the terminal output containing \"acp-verifier-terminal-output\" visible through terminal content."
-        }
-      ]
-    },
-    {
       "slug": "codex",
       "name": "Codex",
       "company": "OpenAI",
@@ -246,7 +130,7 @@
           "description": "Server cold-starts and responds to the first health-check request within 500 milliseconds",
           "explanation_markdown": "<p>This check verifies that the agent boots and responds to the <code>session/new</code> request within 500ms.</p>\n",
           "status": "pass",
-          "message": "Codex booted and responded to initialize in 118ms."
+          "message": "Codex booted and responded to initialize in 114ms."
         },
         {
           "slug": "listing-modes",
@@ -362,7 +246,7 @@
           "description": "Server cold-starts and responds to the first health-check request within 500 milliseconds",
           "explanation_markdown": "<p>This check verifies that the agent boots and responds to the <code>session/new</code> request within 500ms.</p>\n",
           "status": "fail",
-          "message": "OpenCode booted and responded to initialize in 869ms, exceeding the 500ms target."
+          "message": "OpenCode booted and responded to initialize in 767ms, exceeding the 500ms target."
         },
         {
           "slug": "listing-modes",
@@ -389,7 +273,7 @@
           "description": "Changes the mode session configuration option within 500 milliseconds",
           "explanation_markdown": "<p>This check verifies that the agent responds to a mode config option change within 500ms.</p>\n<h3>Why is this important?</h3>\n<p>Mode switching is often exposed through keyboard shortcuts like <code>Shift+Tab</code>, so changing the mode config option should feel instantaneous. Slow config option updates make the client feel laggy and can interrupt the user&#39;s flow.</p>\n",
           "status": "pass",
-          "message": "OpenCode switched mode from build to plan in 13ms."
+          "message": "OpenCode switched mode from build to plan in 8ms."
         },
         {
           "slug": "loads-skills",
@@ -407,7 +291,7 @@
           "description": "Loads `.agents/skills` slash commands within 500 milliseconds of session creation",
           "explanation_markdown": "<p>This check verifies that skills from the session working directory are advertised as slash commands within 500ms of calling <code>session/new</code>.</p>\n<h3>Why is this important?</h3>\n<p>Project skills affect the commands a client presents immediately after a session starts. Slow skill discovery can make command menus feel incomplete or laggy.</p>\n",
           "status": "pass",
-          "message": "OpenCode advertised the acp-verifier-skill skill in 146ms."
+          "message": "OpenCode advertised the acp-verifier-skill skill in 190ms."
         },
         {
           "slug": "supports-session-close",
