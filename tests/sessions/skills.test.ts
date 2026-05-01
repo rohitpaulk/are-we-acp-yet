@@ -22,6 +22,8 @@ test.each(registry.agentSlugs)(
     const hostWorkspace = createWorkspaceWithSkill();
     applyAgentSymlinks(agent, hostWorkspace);
     const updates: acp.SessionUpdate[] = [];
+    const loadStart = performance.now();
+    let skillAdvertisedAtMs: number | undefined;
 
     try {
       using proc = new AgentProcess(agent, {
@@ -30,12 +32,19 @@ test.each(registry.agentSlugs)(
       const connection = proc.connect({
         async sessionUpdate(params) {
           updates.push(params.update);
+          if (params.update.sessionUpdate === "available_commands_update") {
+            const commandNames = params.update.availableCommands.map(
+              (command) => command.name,
+            );
+            skillAdvertisedAtMs ??= commandNames.includes(SKILL_NAME)
+              ? Math.round(performance.now() - loadStart)
+              : undefined;
+          }
         },
       });
 
       await initAndAuth(connection, agent);
 
-      const loadStart = performance.now();
       const session = await connection.newSession({
         cwd: CONTAINER_WORKSPACE,
         mcpServers: [],
@@ -43,9 +52,13 @@ test.each(registry.agentSlugs)(
 
       expect(session.sessionId).toBeTruthy();
 
-      const availableCommands = await waitForAvailableCommands(updates, 5_000);
-      const loadElapsed = performance.now() - loadStart;
-      const loadElapsedMs = Math.round(loadElapsed);
+      const availableCommands = await waitForAvailableCommands(
+        updates,
+        5_000,
+        SKILL_NAME,
+      );
+      const loadElapsedMs =
+        skillAdvertisedAtMs ?? Math.round(performance.now() - loadStart);
       const skillCommand = availableCommands.find(
         (command) => command.name === SKILL_NAME,
       );
@@ -63,7 +76,7 @@ test.each(registry.agentSlugs)(
         );
       }
 
-      if (skillCommand && loadElapsed <= 500) {
+      if (skillCommand && loadElapsedMs <= 500) {
         check.pass(
           "loads-skills-500ms",
           `${agent.name} advertised the ${SKILL_NAME} skill in ${loadElapsedMs}ms.`,
@@ -99,12 +112,13 @@ function createWorkspaceWithSkill(): string {
 async function waitForAvailableCommands(
   updates: acp.SessionUpdate[],
   timeoutMs: number,
+  commandName: string,
 ): Promise<acp.AvailableCommand[]> {
   const deadline = performance.now() + timeoutMs;
 
   while (performance.now() < deadline) {
     const commands = latestAvailableCommands(updates);
-    if (commands) {
+    if (commands?.some((command) => command.name === commandName)) {
       return commands;
     }
 

@@ -1,5 +1,5 @@
 import { mkdirSync, symlinkSync } from "node:fs";
-import { dirname, join } from "node:path";
+import { dirname, join, relative } from "node:path";
 import * as acp from "@agentclientprotocol/sdk";
 import type { Agent } from "../lib/agent";
 
@@ -33,7 +33,8 @@ export async function initAndAuth(
 export function applyAgentSymlinks(agent: Agent, workspace: string): void {
   for (const [symlinkPath, targetPath] of Object.entries(agent.symlinks)) {
     const symlink = join(workspace, symlinkPath);
+    const target = relative(dirname(symlink), join(workspace, targetPath));
     mkdirSync(dirname(symlink), { recursive: true });
-    symlinkSync(join(workspace, targetPath), symlink, "dir");
+    symlinkSync(target, symlink, "dir");
   }
 }
