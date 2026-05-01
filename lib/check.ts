@@ -1,5 +1,5 @@
-import { readdirSync, readFileSync } from "node:fs";
-import { resolve } from "node:path";
+import { readFileSync } from "node:fs";
+import { basename } from "node:path";
 import { parse as parseYaml } from "yaml";
 import type { CheckSlug } from "./generated/check-slugs";
 
@@ -29,22 +29,16 @@ export class Check {
     this.explanationMarkdown = opts.explanationMarkdown;
   }
 
-  static loadFromDir(dir: string): Check[] {
-    const files = readdirSync(dir, { withFileTypes: true })
-      .filter((e) => e.isFile() && e.name.endsWith(".md"))
-      .sort((a, b) => a.name.localeCompare(b.name));
-
-    return files.map((file) => {
-      const { position, slug } = parseFilename(file.name);
-      const raw = readFileSync(resolve(dir, file.name), "utf-8");
-      const { frontmatter, body } = parseFile(raw);
-      return new Check({
-        slug,
-        position,
-        label: frontmatter.label,
-        description: frontmatter.description,
-        explanationMarkdown: body,
-      });
+  static loadFromFile(path: string): Check {
+    const { position, slug } = parseFilename(basename(path));
+    const raw = readFileSync(path, "utf-8");
+    const { frontmatter, body } = parseFile(raw);
+    return new Check({
+      slug,
+      position,
+      label: frontmatter.label,
+      description: frontmatter.description,
+      explanationMarkdown: body,
     });
   }
 }

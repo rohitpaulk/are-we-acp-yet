@@ -1,9 +1,13 @@
+import { resolve } from "node:path";
 import chalk from "chalk";
 import { CheckCollector } from "./check-collector";
 import { AgentRegistry } from "./agent-registry";
 import { type CheckSlug } from "./generated/check-slugs";
 import { CheckRegistry } from "./check-registry";
 import { type AgentResult, ResultsFile } from "./results-file";
+
+const PROJECT_ROOT = resolve(import.meta.dir, "..");
+const CHECKS_DIR = resolve(PROJECT_ROOT, "checks");
 
 export class CheckCollectorRegistry {
   readonly map: Map<string, CheckCollector>;
@@ -27,7 +31,7 @@ export class CheckCollectorRegistry {
   }
 
   toResultsFile(): ResultsFile {
-    const checkRegistry = new CheckRegistry();
+    const checkRegistry = CheckRegistry.loadFromDir(CHECKS_DIR);
 
     const agents = [...this.map.values()].flatMap((collector): AgentResult[] => {
       const checks = recordedCheckSlugs(collector).map((slug) => {
