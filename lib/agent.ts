@@ -7,7 +7,7 @@ import chalk from "chalk";
 
 const AGENTS_DIR = resolve(import.meta.dir, "../agents");
 
-type AgentYAML = {
+type AgentConfigYAML = {
   name: string;
   company: string;
   version_string: string;
@@ -20,7 +20,6 @@ export class Agent {
   readonly name: string;
   readonly company: string;
   readonly versionString: string;
-  readonly dockerContext: string;
   readonly requiredEnvVars: string[];
   readonly env: Record<string, string>;
   readonly symlinks: Record<string, string>;
@@ -30,8 +29,7 @@ export class Agent {
     name: string;
     company: string;
     versionString: string;
-    dockerContext: string;
-    envVars: string[];
+    requiredEnvVars: string[];
     env: Record<string, string>;
     symlinks: Record<string, string>;
   }) {
@@ -39,8 +37,7 @@ export class Agent {
     this.name = opts.name;
     this.company = opts.company;
     this.versionString = opts.versionString;
-    this.dockerContext = opts.dockerContext;
-    this.requiredEnvVars = opts.envVars;
+    this.requiredEnvVars = opts.requiredEnvVars;
     this.env = opts.env;
     this.symlinks = opts.symlinks;
   }
@@ -51,14 +48,14 @@ export class Agent {
 
     const configPath = resolve(agentDir, "agent.yaml");
     const raw = readFileSync(configPath, "utf-8");
-    const config = parseYaml(raw) as AgentYAML;
+    const config = parseYaml(raw) as AgentConfigYAML;
+
     return new Agent({
       slug: dir,
       name: config.name,
       company: config.company,
       versionString: config.version_string,
-      dockerContext: dir,
-      envVars: config.env_vars,
+      requiredEnvVars: config.env_vars,
       env,
       symlinks: config.symlinks ?? {},
     });
@@ -74,28 +71,22 @@ export class Agent {
 
   async buildImage(): Promise<void> {
     const missing = this.requiredEnvVars.filter((v) => !this.envValue(v));
+
     if (missing.length > 0) {
       throw new Error(`Missing required env vars for ${this.slug}: ${missing.join(", ")}`);
     }
 
     const prefix = chalk.cyan(`[build-${this.slug}]`);
-    const context = resolve(AGENTS_DIR, this.dockerContext);
+    const context = resolve(AGENTS_DIR, this.slug);
 
-    const proc = execa("docker", ["build", "-t", this.imageName, context]);
+    const logTransform = function* (line: unknown) {
+      yield `${prefix} ${line}`;
+    };
 
-    proc.stdout?.on("data", (chunk: Buffer) => {
-      for (const line of chunk.toString().split("\n")) {
-        if (line) process.stdout.write(`${prefix} ${line}\n`);
-      }
-    });
-
-    proc.stderr?.on("data", (chunk: Buffer) => {
-      for (const line of chunk.toString().split("\n")) {
-        if (line) process.stderr.write(`${prefix} ${line}\n`);
-      }
-    });
-
-    await proc;
+    await execa({
+      stdout: [logTransform, "inherit"],
+      stderr: [logTransform, "inherit"],
+    })`docker build -t ${this.imageName} ${context}`;
   }
 }
 
