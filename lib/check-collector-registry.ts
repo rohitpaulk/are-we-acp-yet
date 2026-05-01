@@ -2,7 +2,7 @@ import chalk from "chalk";
 import { CheckCollector } from "./check-collector";
 import { AgentRegistry } from "./agent-registry";
 import { type CheckSlug } from "./generated/check-slugs";
-import { loadCheckMetadata } from "./check-metadata";
+import { CheckRegistry } from "./check-registry";
 import { type AgentResult, ResultsFile } from "./results-file";
 
 export class CheckCollectorRegistry {
@@ -27,15 +27,11 @@ export class CheckCollectorRegistry {
   }
 
   toResultsFile(): ResultsFile {
-    const checkMetadata = loadCheckMetadata();
+    const checkRegistry = new CheckRegistry();
 
     const agents = [...this.map.values()].flatMap((collector): AgentResult[] => {
       const checks = recordedCheckSlugs(collector).map((slug) => {
-        const meta = checkMetadata.get(slug);
-
-        if (!meta) {
-          throw new Error(`No metadata found for check: ${slug}`);
-        }
+        const check = checkRegistry.checkBySlug(slug);
 
         const message = collector.checkMessages.get(slug);
         if (!message) {
@@ -43,11 +39,11 @@ export class CheckCollectorRegistry {
         }
 
         return {
-          slug: meta.slug,
-          position: meta.position,
-          label: meta.label,
-          description: meta.description,
-          explanation_markdown: meta.explanationMarkdown,
+          slug: check.slug,
+          position: check.position,
+          label: check.label,
+          description: check.description,
+          explanation_markdown: check.explanationMarkdown,
           status: checkStatus(collector, slug),
           message,
         };

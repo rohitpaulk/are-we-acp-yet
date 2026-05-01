@@ -2,15 +2,17 @@ import { readdirSync } from "node:fs";
 import { resolve } from "node:path";
 import { Agent } from "./agent";
 
-const PROJECT_ROOT = resolve(import.meta.dir, "..");
-const AGENTS_DIR = resolve(PROJECT_ROOT, "agents");
+const AGENTS_DIR = resolve(import.meta.dir, "../agents");
 
 export class AgentRegistry {
   readonly agents: Agent[];
 
   constructor() {
     const all = this.discover();
-    const filter = process.env.AGENTS?.split(",").map((s) => s.trim()).filter(Boolean);
+
+    const filter = process.env.AGENTS?.split(",")
+      .map((s) => s.trim())
+      .filter(Boolean);
 
     if (filter?.length) {
       const unknown = filter.filter((slug) => !all.some((a) => a.slug === slug));
