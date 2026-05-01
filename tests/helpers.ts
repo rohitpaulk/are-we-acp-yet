@@ -19,7 +19,7 @@ export async function initAndAuth(
       (m): m is acp.AuthMethodEnvVar & { type: "env_var" } =>
         "type" in m &&
         m.type === "env_var" &&
-        m.vars.every((v) => v.optional || agent.envVars.includes(v.name)),
+        m.vars.every((v) => v.optional || agent.requiredEnvVars.includes(v.name)),
     );
 
     if (envVarMethod) {

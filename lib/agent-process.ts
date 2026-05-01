@@ -12,7 +12,7 @@ export class AgentProcess {
   private childProcess: ChildProcess;
 
   constructor(agent: Agent, options: AgentProcessOptions = {}) {
-    const envFlags = agent.envVars.flatMap((v) => {
+    const envFlags = agent.requiredEnvVars.flatMap((v) => {
       const value = agent.envValue(v);
       return value === undefined ? [] : ["-e", `${v}=${value}`];
     });

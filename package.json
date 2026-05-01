@@ -1,7 +1,8 @@
 {
   "name": "acp-verifier",
   "scripts": {
-    "generate": "bun run scripts/generate-check-slugs.ts"
+    "generate": "bun run scripts/generate-check-slugs.ts",
+    "lint": "tsc --noEmit"
   },
   "dependencies": {
     "@agentclientprotocol/sdk": "^0.20.0",
