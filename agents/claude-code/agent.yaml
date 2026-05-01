@@ -1,0 +1,7 @@
+name: Claude Code
+company: Anthropic
+version_string: v0.31.4
+env_vars:
+  - ANTHROPIC_API_KEY
+symlinks:
+  .claude/skills: .agents/skills
