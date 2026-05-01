@@ -1,26 +1,23 @@
+import { format, parseISO } from "date-fns";
 import AgentCard, { type AgentCardProps } from "../components/AgentCard";
 import resultsData from "../../data/results.json";
 import { ResultsFile } from "../results-file";
 
 const results = ResultsFile.fromJSON(resultsData);
 
-function formatHumanDate(value: string) {
-  const [year, month, day] = value.split("-").map(Number);
-  const date = new Date(year, month - 1, day);
-  const suffix = day >= 11 && day <= 13 ? "th" : (["th", "st", "nd", "rd"][day % 10] ?? "th");
-
-  return `${day}${suffix} ${date.toLocaleString("en", {
-    month: "long",
-  })} ${year}`;
-}
+// Hide these for now until their checks are better quality
+const HIDDEN_AGENT_SLUGS = ["docker-agent"];
 
 export function HomePage() {
-  const agents = [...(results.agents as AgentCardProps[])].sort((a, b) => {
-    const pctA = a.checks.filter((check) => check.status === "pass").length / a.checks.length;
-    const pctB = b.checks.filter((check) => check.status === "pass").length / b.checks.length;
-    return pctB - pctA;
-  });
-  const lastUpdated = formatHumanDate(results.lastUpdated);
+  const agents = [...(results.agents as AgentCardProps[])]
+    .sort((a, b) => {
+      const pctA = a.checks.filter((check) => check.status === "pass").length / a.checks.length;
+      const pctB = b.checks.filter((check) => check.status === "pass").length / b.checks.length;
+      return pctB - pctA;
+    })
+    .filter((agent) => !HIDDEN_AGENT_SLUGS.includes(agent.slug));
+
+  const lastUpdated = format(parseISO(results.lastUpdated), "do MMMM yyyy");
 
   return (
     <>
