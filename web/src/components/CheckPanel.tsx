@@ -66,7 +66,7 @@ export function CheckPanel({ check }: { check: Check }) {
   );
 
   return (
-    <details id={`check-${check.slug}`} className={checkCardClass}>
+    <details id={`check-${check.slug}`} name="check-accordion" className={checkCardClass}>
       <summary className={checkSummaryClass}>
         <span className="flex min-w-0 items-center gap-3">
           <span className={statusIconClass(didPass)} aria-hidden="true">
