@@ -16,12 +16,20 @@
           "message": "Copilot booted and responded to initialize in 1371ms, exceeding the 500ms target."
         },
         {
+          "slug": "first-session-500ms",
+          "position": 1,
+          "label": "First session < 500ms",
+          "explanation_markdown": "This check verifies that the agent boots and responds to the [`initialize`](https://agentclientprotocol.com/protocol/initialization) and [`session/new`](https://agentclientprotocol.com/protocol/session-setup#creating-a-session) within 500ms.\n\n**Why is this important?**\n\n- This affects the load time of the first chat session.\n- For native agents like Cursor & Zed this load time is usually ~zero.\n\n**Notes**\n\n- There's a separate \"New session < 500ms\" check that tracks load times for subsequent sessions.",
+          "status": "fail",
+          "message": "Copilot took 5372ms to boot and create a new session, exceeding the 500ms target."
+        },
+        {
           "slug": "new-session-500ms",
           "position": 2,
           "label": "New session < 500ms",
           "explanation_markdown": "This check verifies that the agent boots and responds to the `session/new` request within 500ms.",
           "status": "fail",
-          "message": "Copilot took 5110ms to initialize and create a new session, exceeding the 500ms target."
+          "message": "Copilot took 683ms to create a new session, exceeding the 500ms target."
         },
         {
           "slug": "listing-modes",
@@ -128,12 +136,20 @@
           "message": "Codex booted and responded to initialize in 173ms."
         },
         {
+          "slug": "first-session-500ms",
+          "position": 1,
+          "label": "First session < 500ms",
+          "explanation_markdown": "This check verifies that the agent boots and responds to the [`initialize`](https://agentclientprotocol.com/protocol/initialization) and [`session/new`](https://agentclientprotocol.com/protocol/session-setup#creating-a-session) within 500ms.\n\n**Why is this important?**\n\n- This affects the load time of the first chat session.\n- For native agents like Cursor & Zed this load time is usually ~zero.\n\n**Notes**\n\n- There's a separate \"New session < 500ms\" check that tracks load times for subsequent sessions.",
+          "status": "pass",
+          "message": "Codex booted and created a new session in 243ms."
+        },
+        {
           "slug": "new-session-500ms",
           "position": 2,
           "label": "New session < 500ms",
           "explanation_markdown": "This check verifies that the agent boots and responds to the `session/new` request within 500ms.",
           "status": "pass",
-          "message": "Codex initialized and created a new session in 296ms."
+          "message": "Codex created a new session in 9ms."
         },
         {
           "slug": "listing-modes",
@@ -245,7 +261,7 @@
           "label": "First session < 500ms",
           "explanation_markdown": "This check verifies that the agent boots and responds to the [`initialize`](https://agentclientprotocol.com/protocol/initialization) and [`session/new`](https://agentclientprotocol.com/protocol/session-setup#creating-a-session) within 500ms.\n\n**Why is this important?**\n\n- This affects the load time of the first chat session.\n- For native agents like Cursor & Zed this load time is usually ~zero.\n\n**Notes**\n\n- There's a separate \"New session < 500ms\" check that tracks load times for subsequent sessions.",
           "status": "fail",
-          "message": "OpenCode took 817ms to boot and create a new session, exceeding the 500ms target."
+          "message": "OpenCode took 909ms to boot and create a new session, exceeding the 500ms target."
         },
         {
           "slug": "new-session-500ms",
@@ -253,7 +269,7 @@
           "label": "New session < 500ms",
           "explanation_markdown": "This check verifies that the agent boots and responds to the `session/new` request within 500ms.",
           "status": "pass",
-          "message": "OpenCode created a new session in 18ms."
+          "message": "OpenCode created a new session in 17ms."
         },
         {
           "slug": "listing-modes",
@@ -364,8 +380,8 @@
           "position": 1,
           "label": "First session < 500ms",
           "explanation_markdown": "This check verifies that the agent boots and responds to the [`initialize`](https://agentclientprotocol.com/protocol/initialization) and [`session/new`](https://agentclientprotocol.com/protocol/session-setup#creating-a-session) within 500ms.\n\n**Why is this important?**\n\n- This affects the load time of the first chat session.\n- For native agents like Cursor & Zed this load time is usually ~zero.\n\n**Notes**\n\n- There's a separate \"New session < 500ms\" check that tracks load times for subsequent sessions.",
-          "status": "pass",
-          "message": "Claude Code booted and created a new session in 419ms."
+          "status": "fail",
+          "message": "Claude Code took 774ms to boot and create a new session, exceeding the 500ms target."
         },
         {
           "slug": "new-session-500ms",
@@ -373,7 +389,7 @@
           "label": "New session < 500ms",
           "explanation_markdown": "This check verifies that the agent boots and responds to the `session/new` request within 500ms.",
           "status": "pass",
-          "message": "Claude Code created a new session in 229ms."
+          "message": "Claude Code created a new session in 241ms."
         },
         {
           "slug": "listing-modes",
