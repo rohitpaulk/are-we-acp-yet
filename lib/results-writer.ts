@@ -18,13 +18,17 @@ export function writeResults(collectorRegistry: CheckCollectorRegistry): void {
       }
 
       let status: "pass" | "fail";
+
       if (collector.passedCheckSlugs.has(slug)) {
         status = "pass";
-      } else {
+      } else if (collector.failedCheckSlugs.has(slug)) {
         status = "fail";
+      } else {
+        throw new Error(`Check ${slug} was not run for agent ${collector.agent.slug}`);
       }
 
       const message = collector.checkMessages.get(slug);
+
       if (!message) {
         throw new Error(`No result message recorded for check: ${slug}`);
       }

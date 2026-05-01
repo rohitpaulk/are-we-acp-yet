@@ -21,6 +21,18 @@ test.each(registry.agentSlugs)("can list and switch modes (%s)", async (slug) =>
 
   expect(session.sessionId).toBeTruthy();
 
+  if (!session.configOptions) {
+    check.fail(
+      "listing-modes",
+      `${agent.name} did not advertise any session modes (e.g. Ask/Build/Plan).`,
+    );
+
+    check.fail("switch-mode", `${agent.name} does not support modes`);
+    check.fail("switch-mode-500ms", `${agent.name} does not support modes`);
+
+    return;
+  }
+
   session.configOptions!.forEach((option) => {
     expect(option.id).toBeTruthy();
     expect(option.name).toBeTruthy();
