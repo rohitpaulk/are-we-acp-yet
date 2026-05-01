@@ -1,5 +1,4 @@
-import { mkdirSync, writeFileSync } from "node:fs";
-import { dirname, resolve } from "node:path";
+import { resolve } from "node:path";
 import { setDefaultTimeout, afterAll } from "bun:test";
 
 setDefaultTimeout(15_000);
@@ -21,12 +20,10 @@ export const checkCollectorRegistry = new CheckCollectorRegistry(registry);
 afterAll(() => {
   checkCollectorRegistry.printResults();
 
-  const existingResults = ResultsFile.fromFile(OUTPUT_PATH);
-  const partialResults = ResultsFile.fromCheckCollectorRegistry(checkCollectorRegistry);
-  const results = existingResults.merge(partialResults);
+  const oldResults = ResultsFile.fromFile(OUTPUT_PATH);
+  const newResults = ResultsFile.fromCheckCollectorRegistry(checkCollectorRegistry);
 
-  mkdirSync(dirname(OUTPUT_PATH), { recursive: true });
-  writeFileSync(OUTPUT_PATH, JSON.stringify(results, null, 2) + "\n");
+  oldResults.merge(newResults).write(OUTPUT_PATH);
 
   console.log(`\nWrote results to ${OUTPUT_PATH}`);
 });

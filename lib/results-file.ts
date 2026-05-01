@@ -1,4 +1,5 @@
-import { existsSync, readFileSync } from "node:fs";
+import { existsSync, mkdirSync, readFileSync, writeFileSync } from "node:fs";
+import { dirname } from "node:path";
 import { marked } from "marked";
 import type { CheckCollector } from "./check-collector";
 import type { CheckCollectorRegistry } from "./check-collector-registry";
@@ -119,6 +120,11 @@ export class ResultsFile {
       lastUpdated: today(),
       agents: [...agentsBySlug.values()],
     });
+  }
+
+  write(path: string): void {
+    mkdirSync(dirname(path), { recursive: true });
+    writeFileSync(path, JSON.stringify(this, null, 2) + "\n");
   }
 
   private static empty(): ResultsFile {
