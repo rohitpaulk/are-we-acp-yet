@@ -6,8 +6,7 @@ out
 dist
 *.tgz
 
-# code coverage
-coverage
+# code coverage coverage
 *.lcov
 
 # logs
@@ -29,6 +28,7 @@ report.[0-9]_.[0-9]_.[0-9]_.[0-9]_.json
 
 # IntelliJ based IDEs
 .idea
+.junie
 
 # Finder (MacOS) folder config
 .DS_Store
