@@ -1,0 +1,7 @@
+name: Otto
+company: nitishxyz
+version_string: v0.1.263
+env_vars:
+  - OTTOROUTER_PRIVATE_KEY
+symlinks:
+  .otto/skills: .agents/skills
